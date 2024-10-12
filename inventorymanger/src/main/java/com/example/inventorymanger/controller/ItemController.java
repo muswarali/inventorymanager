@@ -13,4 +13,8 @@ public class ItemController {
         this.itemRepository = itemRepository;
     }
 	
+	public void addItem(Item item) {
+	     itemRepository.save(item);
+	}
+
 }
