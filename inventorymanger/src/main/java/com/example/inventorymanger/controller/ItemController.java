@@ -16,5 +16,20 @@ public class ItemController {
 	public void addItem(Item item) {
 	     itemRepository.save(item);
 	}
+	public List<Item> getAllItems() {
+        return itemRepository.findAll();
+    }
+
+    public Item getItemById(String id) {
+        return itemRepository.findById(id);
+    }
+
+    public void updateItem(Item item) {
+        itemRepository.update(item);
+    }
+
+    public void deleteItem(String id) {
+        itemRepository.delete(id);
+    }
 
 }
