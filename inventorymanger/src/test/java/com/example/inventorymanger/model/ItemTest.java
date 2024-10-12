@@ -1,38 +1,24 @@
 package com.example.inventorymanger.model;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.*;
 
-/**
- * Unit test for simple App.
- */
-public class ItemTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public ItemTest( String testName )
-    {
-        super( testName );
-    }
+import org.junit.Test;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( ItemTest.class );
-    }
+public class ItemTest {
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+	@Test
+	   public void testItemConstructorAndGetters() {
+        // Define initial values for an item
+        String id = "1";
+        String name = "Laptop";
+        int quantity = 10;
+
+        // Create an item object
+        Item item = new Item(id, name, quantity);
+
+        // Assert that the values are correctly set
+        assertEquals(id, item.getId());
+        assertEquals(name, item.getName());
+        assertEquals(quantity, item.getQuantity());
     }
 }
