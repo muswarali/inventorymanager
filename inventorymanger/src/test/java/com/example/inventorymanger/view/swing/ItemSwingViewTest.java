@@ -3,11 +3,14 @@ package com.example.inventorymanger.view.swing;
 import static org.junit.Assert.*;
 
 import javax.swing.JLabel;
+import javax.swing.text.JTextComponent;
 
 import org.assertj.swing.annotation.GUITest;
+import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import com.example.inventorymanager.view.swing.InventorySwingView;
@@ -62,6 +65,90 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 
 	    // Verify the Add button is now enabled
 	    window.button("btnAdd").requireEnabled();
+	}
+	
+	@Test @GUITest
+	public void testWhenAnyInputIsEmptyAddButtonShouldBeDisabled()
+	{
+		JTextComponentFixture idTextBox =  window.textBox("idTextBox");
+		JTextComponentFixture nameTextBox =  window.textBox("nameTextBox");
+		JTextComponentFixture quantiyTextBox =  window.textBox("quantityTextBox");
+		JTextComponentFixture priceTextBox =  window.textBox("priceTextBox");
+		JTextComponentFixture descriptionTextBox =  window.textBox("descriptionTextBox");
+
+		//when id is empty
+		idTextBox.enterText(" ");
+		nameTextBox.enterText("Laptop");
+		quantiyTextBox.enterText("10");
+		priceTextBox.enterText("999.99");
+		descriptionTextBox.enterText("Gaming Laptop");
+		window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+		
+		//reseting the inputs
+		idTextBox.setText("");
+		nameTextBox.setText("");
+		quantiyTextBox.setText("");
+		priceTextBox.setText("");
+		descriptionTextBox.setText("");
+		
+		//when Name is empty
+		idTextBox.enterText("1");
+		nameTextBox.enterText(" ");
+		quantiyTextBox.enterText("10");
+		priceTextBox.enterText("999.99");
+		descriptionTextBox.enterText("Gaming Laptop");
+		window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+		
+		
+		//reseting the inputs
+		idTextBox.setText("");
+		nameTextBox.setText("");
+		quantiyTextBox.setText("");
+		priceTextBox.setText("");
+		descriptionTextBox.setText("");
+		
+		//when Quantity is empty
+		idTextBox.enterText("1");
+		nameTextBox.enterText("Laptop");
+		quantiyTextBox.enterText(" ");
+		priceTextBox.enterText("999.99");
+		descriptionTextBox.enterText("Gaming Laptop");
+		window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+		
+		
+		//reseting the inputs
+		idTextBox.setText("");
+		nameTextBox.setText("");
+		quantiyTextBox.setText("");
+		priceTextBox.setText("");
+		descriptionTextBox.setText("");
+		
+		
+		//when Price is empty
+		idTextBox.enterText("1");
+		nameTextBox.enterText("Laptop");
+		quantiyTextBox.enterText("10");
+		priceTextBox.enterText(" ");
+		descriptionTextBox.enterText("Gaming Laptop");
+		window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+		
+		
+		//reseting the inputs
+		idTextBox.setText("");
+		nameTextBox.setText("");
+		quantiyTextBox.setText("");
+		priceTextBox.setText("");
+		descriptionTextBox.setText("");
+		
+		
+		//when Description is empty
+		idTextBox.enterText("1");
+		nameTextBox.enterText("Laptop");
+		quantiyTextBox.enterText("10");
+		priceTextBox.enterText("999.99");
+		descriptionTextBox.enterText(" ");
+		window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+		
 	}
 	
 	@Test @GUITest
