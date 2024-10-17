@@ -18,6 +18,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.example.inventorymanager.repository.mongo.ItemMongoRepository;
+import com.example.inventorymanger.model.Item;
+
 import static com.example.inventorymanager.repository.mongo.ItemMongoRepository.INVENTORY_DB_NAME;
 import static com.example.inventorymanager.repository.mongo.ItemMongoRepository.ITEM_COLLECTION_NAME;
 
@@ -64,6 +66,25 @@ public class ItemMongoRepositoryTest {
 	assertThat(itemMongoRepository.findAll()).isEmpty();
 	}
 	
+	@Test
+	public void testFindAllWhenDatabaseIsNotEmpty() {
+		addTestItemToDatabase("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		addTestItemToDatabase("2", "Laptop", 1, 99.99, "gaming laptop");
+		assertThat(itemMongoRepository.findAll())
+		.containsExactly(
+				new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"),
+				new Item("2", "Laptop", 1, 99.99, "gaming laptop"));
+	}
+	
+	private void addTestItemToDatabase(String id, String name, int quantity, double price, String description) {
+		itemCollection.insertOne(
+				new Document()
+					.append("id", id)
+					.append("name", name)
+					.append("quantity", quantity)
+					.append("price", price)
+					.append("description", description));
+	}
 
 
 }
