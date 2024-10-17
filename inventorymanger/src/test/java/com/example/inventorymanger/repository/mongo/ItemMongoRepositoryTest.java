@@ -5,6 +5,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.bson.Document;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
@@ -78,15 +82,7 @@ public class ItemMongoRepositoryTest {
 				new Item("2", "Laptop", 1, 99.99, "gaming laptop"));
 	}
 	
-	private void addTestItemToDatabase(String id, String name, int quantity, double price, String description) {
-		itemCollection.insertOne(
-				new Document()
-					.append("id", id)
-					.append("name", name)
-					.append("quantity", quantity)
-					.append("price", price)
-					.append("description", description));
-	}
+
 
 	@Test
 	public void testFindByIdNotFound() {
@@ -101,5 +97,56 @@ public class ItemMongoRepositoryTest {
 		assertThat(itemMongoRepository.findById("2"))
 			.isEqualTo(new Item("2", "Laptop", 1, 99.99, "gaming laptop"));
 	}
+	
+	@Test
+	public void testSave() {
+		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		itemMongoRepository.save(item);
+		assertThat(readAllItemFromDatabase())
+			.containsExactly(item);
+	}
 
+	@Test
+	public void testDelete() {
+		addTestItemToDatabase("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		itemMongoRepository.delete("1");
+		assertThat(readAllItemFromDatabase())
+			.isEmpty();
+	}
+	
+	@Test
+	public void testUpdate() {
+	    Item originalItem = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    itemMongoRepository.save(originalItem);
+	   
+	    assertThat(readAllItemFromDatabase()).containsExactly(originalItem);
+	    
+	    Item updatedItem = new Item("1", "Laptop", 15, 899.99, "Updated laptop");
+	    itemMongoRepository.update(updatedItem);
+	    assertThat(readAllItemFromDatabase()).containsExactly(updatedItem);
+	}
+
+
+	
+	private void addTestItemToDatabase(String id, String name, int quantity, double price, String description) {
+		itemCollection.insertOne(
+				new Document()
+					.append("id", id)
+					.append("name", name)
+					.append("quantity", quantity)
+					.append("price", price)
+					.append("description", description));
+	}
+	
+	private List<Item> readAllItemFromDatabase() {
+		return StreamSupport.
+			stream(itemCollection.find().spliterator(), false)
+				.map(d -> new Item(
+				        "" + d.get("id"),
+				        "" + d.get("name"),
+				        ((Number) d.get("quantity")).intValue(),   // Cast to Number and then to int
+				        ((Number) d.get("price")).doubleValue(),   // Cast to Number and then to double
+				        "" + d.get("description")))
+				.collect(Collectors.toList());
+	}
 }
