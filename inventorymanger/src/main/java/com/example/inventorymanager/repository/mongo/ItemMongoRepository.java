@@ -28,7 +28,13 @@ public class ItemMongoRepository implements ItemRepository {
 	@Override
 	public void save(Item item) {
 		// TODO Auto-generated method stub
-		
+		itemCollection.insertOne(
+				new Document()
+				.append("id", item.getId())
+				.append("name", item.getName())
+				.append("quantity", item.getQuantity())
+				.append("price", item.getPrice())
+				.append("description", item.getDescription()));
 	}
 
 	@Override
@@ -62,12 +68,21 @@ public class ItemMongoRepository implements ItemRepository {
 	@Override
 	public void update(Item item) {
 		// TODO Auto-generated method stub
-		
+		Document updatedDocument = new Document()
+                .append("name", item.getName())
+                .append("quantity", item.getQuantity())
+                .append("price", item.getPrice())
+                .append("description", item.getDescription());
+
+        itemCollection.updateOne(
+            Filters.eq("id", item.getId()),
+            new Document("$set", updatedDocument)
+        );
 	}
 
 	@Override
 	public void delete(String id) {
 		// TODO Auto-generated method stub
-		
+		itemCollection.deleteOne(Filters.eq("id", id));
 	}
 }
