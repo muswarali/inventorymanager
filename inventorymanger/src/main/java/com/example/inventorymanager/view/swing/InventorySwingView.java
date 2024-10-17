@@ -5,26 +5,25 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Window.Type;
-import java.awt.Dimension;
+import com.example.inventorymanger.model.Item;
+import com.example.inventorymanger.view.InventoryView;
 
-public class InventorySwingView extends JFrame {
+import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+public class InventorySwingView extends JFrame implements InventoryView {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTextField txtName;
 	private JTextField txtID;
 	private JTextField txtQauntity;
@@ -70,6 +69,7 @@ public class InventorySwingView extends JFrame {
 		getContentPane().add(lblNewLabel_1, gbc_lblNewLabel_1);
 
 		txtID = new JTextField();
+
 		txtID.setName("idTextBox");
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
@@ -151,15 +151,15 @@ public class InventorySwingView extends JFrame {
 		getContentPane().add(txtDescription, gbc_textField_4);
 		txtDescription.setColumns(10);
 
-		JButton btnNewButton = new JButton("Add Item");
-		btnNewButton.setEnabled(false);
-		btnNewButton.setName("btnAdd");
+		JButton btnAdd = new JButton("Add Item");
+		btnAdd.setEnabled(false);
+		btnAdd.setName("btnAdd");
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton.gridwidth = 3;
 		gbc_btnNewButton.gridx = 0;
 		gbc_btnNewButton.gridy = 5;
-		getContentPane().add(btnNewButton, gbc_btnNewButton);
+		getContentPane().add(btnAdd, gbc_btnNewButton);
 
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -175,19 +175,16 @@ public class InventorySwingView extends JFrame {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setName("itemList");
 
-		JButton btnNewButton_1 = new JButton("Delete Selected");
-		btnNewButton_1.setEnabled(false);
-		btnNewButton_1.setName("btnDeleteSelected");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		JButton btnDeleteSelected = new JButton("Delete Selected");
+		btnDeleteSelected.setEnabled(false);
+		btnDeleteSelected.setName("btnDeleteSelected");
+
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
 		gbc_btnNewButton_1.gridwidth = 3;
 		gbc_btnNewButton_1.gridx = 0;
 		gbc_btnNewButton_1.gridy = 7;
-		getContentPane().add(btnNewButton_1, gbc_btnNewButton_1);
+		getContentPane().add(btnDeleteSelected, gbc_btnNewButton_1);
 
 		JLabel lblNewLabel_5 = new JLabel("");
 		lblNewLabel_5.setName("errorMessageLabel");
@@ -197,6 +194,51 @@ public class InventorySwingView extends JFrame {
 		gbc_lblNewLabel_5.gridx = 0;
 		gbc_lblNewLabel_5.gridy = 8;
 		getContentPane().add(lblNewLabel_5, gbc_lblNewLabel_5);
+
+		KeyAdapter btnAddenabler = new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				btnAdd.setEnabled(!txtID.getText().trim().isEmpty() && !txtName.getText().trim().isEmpty()
+						&& !txtDescription.getText().trim().isEmpty() && !txtPrice.getText().trim().isEmpty()
+						&& !txtQauntity.getText().trim().isEmpty());
+			}
+		};
+
+		txtID.addKeyListener(btnAddenabler);
+		txtName.addKeyListener(btnAddenabler);
+		txtDescription.addKeyListener(btnAddenabler);
+		txtPrice.addKeyListener(btnAddenabler);
+		txtQauntity.addKeyListener(btnAddenabler);
+
+	}
+
+	@Override
+	public void displayItems(List<Item> items) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void addItem(Item item) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteItem(Item item) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void updateItem(Item item) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showErrorMessage(String message, Item item) {
+		// TODO Auto-generated method stub
 
 	}
 

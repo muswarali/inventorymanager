@@ -80,8 +80,11 @@
 	            <version>1.7.0</version>
 	            <configuration>
 	                <targetClasses>
-	                    <param>com.example.inventory.*</param>
+	                    <param>com.example.inventory.*.*</param>
 	                </targetClasses>
+	                <targetTests>
+	                	<param>com.example.inventory.*.*</param>
+	                </targetTests>
 	                <mutationThreshold>80</mutationThreshold>
 	                <outputFormats>
 	                    <param>HTML</param>

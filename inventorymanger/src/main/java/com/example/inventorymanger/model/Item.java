@@ -6,6 +6,10 @@ public class Item {
     private int quantity;
     private double price;
     private String description;
+    
+    public Item() {
+    	
+    }
 
     public Item(String id, String name, int quantity, double price, String description) {
         this.setId(id);
