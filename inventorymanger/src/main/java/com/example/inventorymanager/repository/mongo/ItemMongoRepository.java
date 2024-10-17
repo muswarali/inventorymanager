@@ -1,5 +1,6 @@
 package com.example.inventorymanager.repository.mongo;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bson.Document;
@@ -30,7 +31,7 @@ public class ItemMongoRepository implements ItemRepository {
 	@Override
 	public List<Item> findAll() {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
