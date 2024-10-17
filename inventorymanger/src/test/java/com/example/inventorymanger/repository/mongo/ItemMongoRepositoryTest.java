@@ -2,6 +2,8 @@ package com.example.inventorymanger.repository.mongo;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.InetSocketAddress;
 import org.bson.Document;
 import com.mongodb.MongoClient;
@@ -86,5 +88,18 @@ public class ItemMongoRepositoryTest {
 					.append("description", description));
 	}
 
+	@Test
+	public void testFindByIdNotFound() {
+		assertThat(itemMongoRepository.findById("1"))
+			.isNull();
+	}
+
+	@Test
+	public void testFindByIdFound() {
+		addTestItemToDatabase("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		addTestItemToDatabase("2", "Laptop", 1, 99.99, "gaming laptop");
+		assertThat(itemMongoRepository.findById("2"))
+			.isEqualTo(new Item("2", "Laptop", 1, 99.99, "gaming laptop"));
+	}
 
 }
