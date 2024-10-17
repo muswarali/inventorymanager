@@ -2,6 +2,8 @@ package com.example.inventorymanager.repository.mongo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.bson.Document;
 
@@ -31,7 +33,16 @@ public class ItemMongoRepository implements ItemRepository {
 	@Override
 	public List<Item> findAll() {
 		// TODO Auto-generated method stub
-		return Collections.emptyList();
+		return StreamSupport
+			    .stream(itemCollection.find().spliterator(), false)
+			    .map(d -> new Item(
+			        "" + d.get("id"),
+			        "" + d.get("name"),
+			        ((Number) d.get("quantity")).intValue(),   // Cast to Number and then to int
+			        ((Number) d.get("price")).doubleValue(),   // Cast to Number and then to double
+			        "" + d.get("description")
+			    ))
+			    .collect(Collectors.toList());
 	}
 
 	@Override
