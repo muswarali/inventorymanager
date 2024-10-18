@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-
+	<testcontainers.version>1.15.1</testcontainers.version>
     <junit.version>4.13.2</junit.version>
   </properties>
 
@@ -68,6 +68,20 @@
 		<scope>test</scope>
 	</dependency>
 	
+	<dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+     <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+	
   </dependencies>
   
   <build>
@@ -81,6 +95,26 @@
 	  
 	  <pluginManagement>
 		  <plugins>
+		  <!-- Adding source folder for Intergration Testing -->
+		   <plugin>
+        		<groupId>org.codehaus.mojo</groupId>
+        		<artifactId>build-helper-maven-plugin</artifactId>
+        		<version>3.0.0</version>
+        	<executions>
+          		<execution>
+            		<id>add-test-source</id>
+            		<phase>generate-test-sources</phase>
+            		<goals>
+              			<goal>add-test-source</goal>
+            		</goals>
+            	<configuration>
+              		<sources>
+                		<source>src/it/java</source>
+              		</sources>
+            	</configuration>
+          		</execution>
+        	</executions>
+      	</plugin>
 			   <!-- Surefire Plugin for Unit Testing -->
 	        <plugin>
 	            <groupId>org.apache.maven.plugins</groupId>
