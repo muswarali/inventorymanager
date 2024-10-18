@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.MongoDBContainer;
 
 import com.example.inventorymanager.repository.mongo.ItemMongoRepository;
 import com.example.inventorymanger.model.Item;
@@ -27,11 +28,14 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+
+
 public class ItemMongoRepositoryTestcontainersIT {
 
-	@SuppressWarnings("rawtypes")
+
 	@ClassRule
-	public static final GenericContainer mongo = new GenericContainer("mongo:4.4.3").withExposedPorts(27017);
+	public static final MongoDBContainer mongo =
+	new MongoDBContainer("mongo:4.4.3");
 	
 	private MongoClient client;
 	private ItemMongoRepository itemRepository;
