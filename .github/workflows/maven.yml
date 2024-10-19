@@ -22,5 +22,5 @@ jobs:
         restore-keys: ${{ runner.os }}-m2-
     - name: Build with Maven
       run: xvfb-run mvn verify
-      working-directory: inventorymanager
+      working-directory: inventorymanger
 
