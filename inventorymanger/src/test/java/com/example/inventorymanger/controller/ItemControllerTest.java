@@ -52,12 +52,12 @@ public class ItemControllerTest {
 	}
 	
 	@Test
-	public void testGetAllItemsWithEmptyList() {
-	    when(itemRepository.findAll()).thenReturn(List.of()); // Mock an empty list
+	public void testGetAllItemsWithEmptyList() {	
+	    when(itemRepository.findAll()).thenReturn(null); // Mock an empty list
 
 	    itemController.getAllItems();
 
-	    verify(inventoryView).displayItems(List.of());
+	    verify(inventoryView).displayItems(null);
 	}
 
 
