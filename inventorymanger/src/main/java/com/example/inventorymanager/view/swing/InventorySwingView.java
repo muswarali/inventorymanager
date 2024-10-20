@@ -245,19 +245,27 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	@Override
 	public void addItem(Item item) {
 		// TODO Auto-generated method stub
-
+		listItemModel.addElement(item);
+		resetErrorLabel();
 	}
 
 	@Override
 	public void deleteItem(Item item) {
 		// TODO Auto-generated method stub
-
+		listItemModel.removeElement(item);
+		resetErrorLabel();
 	}
 
 	@Override
 	public void updateItem(Item item) {
 		// TODO Auto-generated method stub
-
+		for (int i = 0; i < listItemModel.size(); i++) {
+			if (listItemModel.get(i).getId().equals(item.getId())) {
+				listItemModel.set(i, item);
+				break;
+			}
+		}
+		resetErrorLabel();
 	}
 
 	@Override
@@ -265,6 +273,10 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		// TODO Auto-generated method stub
 		lblErrorMessage.setText(message + ": " + item);
 
+	}
+
+	private void resetErrorLabel() {
+		lblErrorMessage.setText(" ");
 	}
 
 }
