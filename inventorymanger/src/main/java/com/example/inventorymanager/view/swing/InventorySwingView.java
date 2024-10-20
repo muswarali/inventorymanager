@@ -30,6 +30,11 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	private JTextField txtQauntity;
 	private JTextField txtPrice;
 	private JTextField txtDescription;
+	private JButton btnDeleteSelected;
+	private JButton btnUpdateSelected;
+	private JButton btnAdd;
+
+	private JLabel lblErrorMessage;
 
 	private JList<Item> listItems;
 	private DefaultListModel<Item> listItemModel;
@@ -159,7 +164,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		getContentPane().add(txtDescription, gbc_textField_4);
 		txtDescription.setColumns(10);
 
-		JButton btnAdd = new JButton("Add Item");
+		btnAdd = new JButton("Add Item");
 		btnAdd.setEnabled(false);
 		btnAdd.setName("btnAdd");
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
@@ -169,7 +174,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		gbc_btnNewButton_2.gridy = 5;
 		getContentPane().add(btnAdd, gbc_btnNewButton_2);
 
-		JButton btnDeleteSelected = new JButton("Delete Selected");
+		btnDeleteSelected = new JButton("Delete Selected");
 		btnDeleteSelected.setEnabled(false);
 		btnDeleteSelected.setName("btnDeleteSelected");
 		GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
@@ -194,7 +199,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		listItems.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listItems.setName("itemList");
 
-		JButton btnUpdateSelected = new JButton("Update Selected");
+		btnUpdateSelected = new JButton("Update Selected");
 		btnUpdateSelected.setName("btnUpdateSelected");
 		btnUpdateSelected.setEnabled(false);
 		GridBagConstraints gbc_btnUpdateSelected;
@@ -204,14 +209,14 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		gbc_btnUpdateSelected.gridy = 7;
 		getContentPane().add(btnUpdateSelected, gbc_btnUpdateSelected);
 
-		JLabel lblNewLabel_5 = new JLabel("");
-		lblNewLabel_5.setName("errorMessageLabel");
-		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.gridwidth = 3;
-		gbc_lblNewLabel_5.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_5.gridx = 0;
-		gbc_lblNewLabel_5.gridy = 8;
-		getContentPane().add(lblNewLabel_5, gbc_lblNewLabel_5);
+		lblErrorMessage = new JLabel("");
+		lblErrorMessage.setName("errorMessageLabel");
+		GridBagConstraints gbc_lblErrorMessage = new GridBagConstraints();
+		gbc_lblErrorMessage.gridwidth = 3;
+		gbc_lblErrorMessage.insets = new Insets(0, 0, 0, 5);
+		gbc_lblErrorMessage.gridx = 0;
+		gbc_lblErrorMessage.gridy = 8;
+		getContentPane().add(lblErrorMessage, gbc_lblErrorMessage);
 
 		KeyAdapter btnAddenabler = new KeyAdapter() {
 			@Override
@@ -258,6 +263,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	@Override
 	public void showErrorMessage(String message, Item item) {
 		// TODO Auto-generated method stub
+		lblErrorMessage.setText(message + ": " + item);
 
 	}
 
