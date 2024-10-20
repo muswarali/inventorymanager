@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,6 +31,9 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	private JTextField txtPrice;
 	private JTextField txtDescription;
 
+	private JList<Item> listItems;
+	private DefaultListModel<Item> listItemModel;
+
 	/**
 	 * Launch the application.
 	 */
@@ -46,6 +50,10 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		});
 	}
 
+	public DefaultListModel<Item> getListItemModel() {
+		return listItemModel;
+	}
+
 	/**
 	 * Create the frame.
 	 */
@@ -54,9 +62,9 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Inventory Manager");
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 45, 0, 770, 0 };
+		gridBagLayout.columnWidths = new int[] { 45, 0, 770, 0, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 173, 0, 23, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		getContentPane().setLayout(gridBagLayout);
 
@@ -72,7 +80,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 		txtID.setName("idTextBox");
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
 		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_1.gridx = 2;
 		gbc_textField_1.gridy = 0;
@@ -90,7 +98,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		txtName = new JTextField();
 		txtName.setName("nameTextBox");
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 0);
+		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 2;
 		gbc_textField.gridy = 1;
@@ -108,7 +116,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		txtQauntity = new JTextField();
 		txtQauntity.setName("quantityTextBox");
 		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_2.insets = new Insets(0, 0, 5, 5);
 		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_2.gridx = 2;
 		gbc_textField_2.gridy = 2;
@@ -126,7 +134,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		txtPrice = new JTextField();
 		txtPrice.setName("priceTextBox");
 		GridBagConstraints gbc_textField_3 = new GridBagConstraints();
-		gbc_textField_3.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_3.insets = new Insets(0, 0, 5, 5);
 		gbc_textField_3.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_3.gridx = 2;
 		gbc_textField_3.gridy = 3;
@@ -144,7 +152,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		txtDescription = new JTextField();
 		txtDescription.setName("descriptionTextBox");
 		GridBagConstraints gbc_textField_4 = new GridBagConstraints();
-		gbc_textField_4.insets = new Insets(0, 0, 5, 0);
+		gbc_textField_4.insets = new Insets(0, 0, 5, 5);
 		gbc_textField_4.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_4.gridx = 2;
 		gbc_textField_4.gridy = 4;
@@ -154,35 +162,45 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		JButton btnAdd = new JButton("Add Item");
 		btnAdd.setEnabled(false);
 		btnAdd.setName("btnAdd");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton.gridwidth = 3;
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 5;
-		getContentPane().add(btnAdd, gbc_btnNewButton);
+		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
+		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_2.gridwidth = 3;
+		gbc_btnNewButton_2.gridx = 0;
+		gbc_btnNewButton_2.gridy = 5;
+		getContentPane().add(btnAdd, gbc_btnNewButton_2);
 
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridwidth = 3;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 6;
 		getContentPane().add(scrollPane, gbc_scrollPane);
 
-		JList list = new JList();
-		scrollPane.setViewportView(list);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setName("itemList");
+		listItemModel = new DefaultListModel<Item>();
+		listItems = new JList(listItemModel);
+		scrollPane.setViewportView(listItems);
+		listItems.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listItems.setName("itemList");
+
+		JButton btnUpdateSelected = new JButton("Update Selected");
+		btnUpdateSelected.setName("btnUpdateSelected");
+		btnUpdateSelected.setEnabled(false);
+		GridBagConstraints gbc_btnUpdateSelected;
+		gbc_btnUpdateSelected = new GridBagConstraints();
+		gbc_btnUpdateSelected.insets = new Insets(0, 0, 5, 5);
+		gbc_btnUpdateSelected.gridx = 1;
+		gbc_btnUpdateSelected.gridy = 7;
+		getContentPane().add(btnUpdateSelected, gbc_btnUpdateSelected);
 
 		JButton btnDeleteSelected = new JButton("Delete Selected");
 		btnDeleteSelected.setEnabled(false);
 		btnDeleteSelected.setName("btnDeleteSelected");
 
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1.gridwidth = 3;
-		gbc_btnNewButton_1.gridx = 0;
+		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_1.gridx = 2;
 		gbc_btnNewButton_1.gridy = 7;
 		getContentPane().add(btnDeleteSelected, gbc_btnNewButton_1);
 
