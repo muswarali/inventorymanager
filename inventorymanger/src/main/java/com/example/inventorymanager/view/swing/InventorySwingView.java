@@ -233,6 +233,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	@Override
 	public void displayItems(List<Item> items) {
 		// TODO Auto-generated method stub
+		items.stream().forEach(listItemModel::addElement);
 
 	}
 
