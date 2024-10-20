@@ -1,6 +1,9 @@
 package com.example.inventorymanger.view.swing;
 
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
 
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
@@ -165,6 +168,17 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 		deleteButton.requireEnabled();
 		window.list("itemList").clearSelection();
 		deleteButton.requireDisabled();
+	}
+	
+	@Test
+	public void testsDisplayItemsShouldAddItemDescriptionsToTheList() {
+		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
+		GuiActionRunner.execute(() ->
+		inventorySwingView.displayItems(Arrays.asList(item1, item2))
+				);
+		String[] listContents = window.list().contents();
+		assertThat(listContents).containsExactly(item1.toString(), item2.toString());
 	}
 
 }
