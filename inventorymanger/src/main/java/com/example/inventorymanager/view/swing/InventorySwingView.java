@@ -12,11 +12,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import com.example.inventorymanger.model.Item;
 import com.example.inventorymanger.view.InventoryView;
+
+import com.example.inventorymanger.controller.ItemController;
 
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
@@ -39,6 +42,8 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	private JList<Item> listItems;
 	private DefaultListModel<Item> listItemModel;
 
+	private ItemController itemController;
+
 	/**
 	 * Launch the application.
 	 */
@@ -57,6 +62,10 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 	public DefaultListModel<Item> getListItemModel() {
 		return listItemModel;
+	}
+
+	public void setItemController(ItemController itemController) {
+		this.itemController = itemController;
 	}
 
 	/**
@@ -167,6 +176,9 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnAdd = new JButton("Add Item");
 		btnAdd.setEnabled(false);
 		btnAdd.setName("btnAdd");
+		btnAdd.addActionListener(e -> itemController
+				.addItem(new Item(txtID.getText(), txtName.getText(), Integer.parseInt(txtQauntity.getText()),
+						Double.parseDouble(txtPrice.getText()), txtDescription.getText())));
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_2.gridwidth = 3;
@@ -177,6 +189,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnDeleteSelected = new JButton("Delete Selected");
 		btnDeleteSelected.setEnabled(false);
 		btnDeleteSelected.setName("btnDeleteSelected");
+		btnDeleteSelected.addActionListener(e -> itemController.deleteItem(listItems.getSelectedValue()));
 		GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
 		gbc_btnDeleteSelected.insets = new Insets(0, 0, 5, 5);
 		gbc_btnDeleteSelected.gridx = 2;
@@ -194,7 +207,31 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 		listItemModel = new DefaultListModel<Item>();
 		listItems = new JList<>(listItemModel);
-		listItems.addListSelectionListener(e -> btnDeleteSelected.setEnabled(listItems.getSelectedIndex() != -1));
+		listItems.addListSelectionListener(e -> {
+			boolean isItemSelected = listItems.getSelectedIndex() != -1;
+			btnDeleteSelected.setEnabled(isItemSelected);
+			btnUpdateSelected.setEnabled(isItemSelected);
+			if (isItemSelected) {
+
+				Item selectedItem = listItems.getSelectedValue();
+
+				txtID.setText(selectedItem.getId());
+				txtName.setText(selectedItem.getName());
+				txtQauntity.setText(String.valueOf(selectedItem.getQuantity()));
+				txtPrice.setText(String.valueOf(selectedItem.getPrice()));
+				txtDescription.setText(selectedItem.getDescription());
+
+				txtID.setEnabled(false);
+			} else {
+				txtID.setText("");
+				txtName.setText("");
+				txtQauntity.setText("");
+				txtPrice.setText("");
+				txtDescription.setText("");
+
+				txtID.setEnabled(true);
+			}
+		});
 		scrollPane.setViewportView(listItems);
 		listItems.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listItems.setName("itemList");
@@ -202,6 +239,30 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnUpdateSelected = new JButton("Update Selected");
 		btnUpdateSelected.setName("btnUpdateSelected");
 		btnUpdateSelected.setEnabled(false);
+		btnUpdateSelected.addActionListener(e -> {
+			try {
+
+				int selectedIndex = listItems.getSelectedIndex();
+				if (selectedIndex != -1) {
+					// Fetch and parse the input values
+					String id = txtID.getText();
+					String name = txtName.getText();
+					int quantity = Integer.parseInt(txtQauntity.getText());
+					double price = Double.parseDouble(txtPrice.getText());
+					String description = txtDescription.getText();
+
+					Item updatedItem = new Item(id, name, quantity, price, description);
+
+					itemController.updateItem(updatedItem);
+				} else {
+					JOptionPane.showMessageDialog(this, "Please select an item to update.", "No Item Selected",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(this, "Please enter valid numeric values for quantity and price.",
+						"Invalid Input", JOptionPane.ERROR_MESSAGE);
+			}
+		});
 		GridBagConstraints gbc_btnUpdateSelected;
 		gbc_btnUpdateSelected = new GridBagConstraints();
 		gbc_btnUpdateSelected.insets = new Insets(0, 0, 5, 5);
