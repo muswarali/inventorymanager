@@ -181,4 +181,13 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 		assertThat(listContents).containsExactly(item1.toString(), item2.toString());
 	}
 
+	@Test
+	public void testShowErrorMessageShouldShowTheMessageInTheErrorLabel() {
+		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		GuiActionRunner.execute(
+			() -> inventorySwingView.showErrorMessage("error message", item)
+		);
+		window.label("errorMessageLabel")
+			.requireText("error message: " + item);
+	}
 }
