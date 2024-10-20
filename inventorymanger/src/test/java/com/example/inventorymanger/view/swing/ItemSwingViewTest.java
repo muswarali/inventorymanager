@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
@@ -190,4 +191,57 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 		window.label("errorMessageLabel")
 			.requireText("error message: " + item);
 	}
+	
+	@Test
+	public void testItemAddedShouldAddTheItemToTheListAndResetTheErrorLabel() {
+		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		GuiActionRunner.execute(
+				() ->
+				inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"))
+				);
+		String[] listContents = window.list().contents();
+		assertThat(listContents).containsExactly(item.toString());
+		window.label("errorMessageLabel").requireText(" ");
+	}
+	
+	@Test
+	public void testItemUpdatedShouldUpdateTheItemInTheListAndResetTheErrorLabel() {
+	    Item updatedItem = new Item("1", "Laptop", 15, 899.99, "Updated laptop");
+	    
+	    GuiActionRunner.execute(() -> inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop")));
+	    
+	
+	    GuiActionRunner.execute(() -> inventorySwingView.updateItem(updatedItem));
+	    
+	    String[] listContents = window.list().contents();
+	    assertThat(listContents).containsExactly(updatedItem.toString());
+	    
+	    window.label("errorMessageLabel").requireText(" ");
+	}
+
+
+	@Test
+	public void testItemRemovedShouldRemoveTheItemFromTheListAndResetTheErrorLabel() {
+		// setup
+		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
+		GuiActionRunner.execute(
+			() -> {
+				DefaultListModel<Item> listItemModel = inventorySwingView.getListItemModel();
+				listItemModel.addElement(item1);
+				listItemModel.addElement(item2);
+			}
+		);
+		// execute
+		GuiActionRunner.execute(
+			() ->
+			inventorySwingView.deleteItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"))
+		);
+		// verify
+		String[] listContents = window.list().contents();
+		assertThat(listContents).containsExactly(item2.toString());
+		window.label("errorMessageLabel").requireText(" ");
+	}
+
+	
 }
