@@ -1,6 +1,7 @@
 package com.example.inventorymanger.view.swing;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -19,10 +20,14 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import com.example.inventorymanager.view.swing.InventorySwingView;
+import com.example.inventorymanger.controller.ItemController;
 import com.example.inventorymanger.model.Item;
+
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 
 @RunWith(GUITestRunner.class)
@@ -31,11 +36,20 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	private FrameFixture window;
 	private InventorySwingView inventorySwingView;
 	
+	
+	@Mock
+	private ItemController itemController;
+
+	private AutoCloseable closeable;
+
+	
 	@Override
 	protected void onSetUp() throws Exception {
 		// TODO Auto-generated method stub
+		closeable = MockitoAnnotations.openMocks(this);
 		GuiActionRunner.execute(()->{
 			inventorySwingView = new InventorySwingView();
+			inventorySwingView.setItemController(itemController);
 			return inventorySwingView;
 		});
 		window = new FrameFixture(robot(),inventorySwingView);
@@ -44,6 +58,10 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 		
 	}
 
+	@Override
+	protected void onTearDown() throws Exception {
+		closeable.close();
+	}
 
 	
 	@Test @GUITest
@@ -242,6 +260,59 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 		assertThat(listContents).containsExactly(item2.toString());
 		window.label("errorMessageLabel").requireText(" ");
 	}
+	
+	@Test
+	public void testAddButtonShouldDelegateToItemControllerNewItem() {
+		window.textBox("idTextBox").enterText("1");
+		window.textBox("nameTextBox").enterText("Laptop");
+		window.textBox("quantityTextBox").enterText("10");
+		window.textBox("priceTextBox").enterText("999.99");
+		window.textBox("descriptionTextBox").enterText("Gaming Laptop");
+		window.button(JButtonMatcher.withText("Add Item")).click();
+		verify(itemController).addItem(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
+	}
 
+	@Test
+	public void testDeleteButtonShouldDelegateToItemControllerDeleteItem() {
+		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
+		GuiActionRunner.execute(
+			() -> {
+				DefaultListModel<Item> listStudentsModel = inventorySwingView.getListItemModel();
+				listStudentsModel.addElement(item1);
+				listStudentsModel.addElement(item2);
+			}
+		);
+		window.list("itemList").selectItem(1);
+		window.button(JButtonMatcher.withText("Delete Selected")).click();
+		verify(itemController).deleteItem(item2);
+	}
+
+	@Test
+	public void testUpdateButtonShouldDelegateToItemControllerUpdateSelectedItem() {
+	    Item originalItem1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    Item originalItem2 = new Item("2", "Laptop", 12, 599.99, "Gaming laptop");
+
+	    GuiActionRunner.execute(() -> {
+	        DefaultListModel<Item> listItemModel = inventorySwingView.getListItemModel();
+	        listItemModel.addElement(originalItem1);
+	        listItemModel.addElement(originalItem2);
+	    });
+
+	    window.list("itemList").selectItem(1); 
+	    
+	    window.textBox("idTextBox").requireText("2");
+	    window.textBox("idTextBox").requireDisabled(); 
+	        
+	    window.textBox("nameTextBox").setText("Updated Laptop");
+	    window.textBox("quantityTextBox").setText("15");  
+	    window.textBox("priceTextBox").setText("699.99"); 
+	    window.textBox("descriptionTextBox").setText("Updated gaming laptop");  
+	    
+	    window.button(JButtonMatcher.withText("Update Selected")).click();  
+
+	    Item updatedItem = new Item("2", "Updated Laptop", 15, 699.99, "Updated gaming laptop");
+	    verify(itemController).updateItem(updatedItem);
+	}
 	
 }
