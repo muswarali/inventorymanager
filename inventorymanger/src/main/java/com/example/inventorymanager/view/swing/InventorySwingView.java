@@ -169,6 +169,15 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		gbc_btnNewButton_2.gridy = 5;
 		getContentPane().add(btnAdd, gbc_btnNewButton_2);
 
+		JButton btnDeleteSelected = new JButton("Delete Selected");
+		btnDeleteSelected.setEnabled(false);
+		btnDeleteSelected.setName("btnDeleteSelected");
+		GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
+		gbc_btnDeleteSelected.insets = new Insets(0, 0, 5, 5);
+		gbc_btnDeleteSelected.gridx = 2;
+		gbc_btnDeleteSelected.gridy = 7;
+		getContentPane().add(btnDeleteSelected, gbc_btnDeleteSelected);
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -179,7 +188,8 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		getContentPane().add(scrollPane, gbc_scrollPane);
 
 		listItemModel = new DefaultListModel<Item>();
-		listItems = new JList(listItemModel);
+		listItems = new JList<>(listItemModel);
+		listItems.addListSelectionListener(e -> btnDeleteSelected.setEnabled(listItems.getSelectedIndex() != -1));
 		scrollPane.setViewportView(listItems);
 		listItems.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listItems.setName("itemList");
@@ -193,16 +203,6 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		gbc_btnUpdateSelected.gridx = 1;
 		gbc_btnUpdateSelected.gridy = 7;
 		getContentPane().add(btnUpdateSelected, gbc_btnUpdateSelected);
-
-		JButton btnDeleteSelected = new JButton("Delete Selected");
-		btnDeleteSelected.setEnabled(false);
-		btnDeleteSelected.setName("btnDeleteSelected");
-
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 2;
-		gbc_btnNewButton_1.gridy = 7;
-		getContentPane().add(btnDeleteSelected, gbc_btnNewButton_1);
 
 		JLabel lblNewLabel_5 = new JLabel("");
 		lblNewLabel_5.setName("errorMessageLabel");

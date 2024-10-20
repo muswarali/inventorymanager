@@ -155,7 +155,7 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	}
 	
 	@Test
-	public void testDeleteButtonShouldBeEnabledOnlyWhenAStudentIsSelected() {
+	public void testDeleteButtonShouldBeEnabledOnlyWhenAItemIsSelected() {
 		GuiActionRunner.execute(() ->
 		inventorySwingView.getListItemModel().addElement(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop")));
 		
