@@ -1,18 +1,13 @@
 package com.example.inventorymanger.view.swing;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.text.JTextComponent;
-
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
-import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;

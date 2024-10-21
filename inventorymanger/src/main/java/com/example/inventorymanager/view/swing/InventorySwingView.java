@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -240,27 +239,20 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnUpdateSelected.setName("btnUpdateSelected");
 		btnUpdateSelected.setEnabled(false);
 		btnUpdateSelected.addActionListener(e -> {
-			try {
 
-				int selectedIndex = listItems.getSelectedIndex();
-				if (selectedIndex != -1) {
-					// Fetch and parse the input values
-					String id = txtID.getText();
-					String name = txtName.getText();
-					int quantity = Integer.parseInt(txtQauntity.getText());
-					double price = Double.parseDouble(txtPrice.getText());
-					String description = txtDescription.getText();
+			boolean isItemSelected = listItems.getSelectedIndex() != -1;
 
-					Item updatedItem = new Item(id, name, quantity, price, description);
+			if (isItemSelected) {
+				// Fetch and parse the input values
+				String id = txtID.getText();
+				String name = txtName.getText();
+				int quantity = Integer.parseInt(txtQauntity.getText());
+				double price = Double.parseDouble(txtPrice.getText());
+				String description = txtDescription.getText();
 
-					itemController.updateItem(updatedItem);
-				} else {
-					JOptionPane.showMessageDialog(this, "Please select an item to update.", "No Item Selected",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			} catch (NumberFormatException ex) {
-				JOptionPane.showMessageDialog(this, "Please enter valid numeric values for quantity and price.",
-						"Invalid Input", JOptionPane.ERROR_MESSAGE);
+				Item updatedItem = new Item(id, name, quantity, price, description);
+
+				itemController.updateItem(updatedItem);
 			}
 		});
 		GridBagConstraints gbc_btnUpdateSelected;
