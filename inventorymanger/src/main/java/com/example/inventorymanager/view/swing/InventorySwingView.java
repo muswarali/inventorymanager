@@ -15,6 +15,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+
 import com.example.inventorymanger.model.Item;
 import com.example.inventorymanger.view.InventoryView;
 
@@ -46,18 +48,6 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InventorySwingView frame = new InventorySwingView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public DefaultListModel<Item> getListItemModel() {
 		return listItemModel;
@@ -175,9 +165,10 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnAdd = new JButton("Add Item");
 		btnAdd.setEnabled(false);
 		btnAdd.setName("btnAdd");
-		btnAdd.addActionListener(e -> itemController
+		btnAdd.addActionListener(e -> new Thread(() -> itemController
 				.addItem(new Item(txtID.getText(), txtName.getText(), Integer.parseInt(txtQauntity.getText()),
-						Double.parseDouble(txtPrice.getText()), txtDescription.getText())));
+						Double.parseDouble(txtPrice.getText()), txtDescription.getText())))
+				.start());
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_2.gridwidth = 3;
@@ -188,7 +179,8 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnDeleteSelected = new JButton("Delete Selected");
 		btnDeleteSelected.setEnabled(false);
 		btnDeleteSelected.setName("btnDeleteSelected");
-		btnDeleteSelected.addActionListener(e -> itemController.deleteItem(listItems.getSelectedValue()));
+		btnDeleteSelected.addActionListener(
+				e -> new Thread(() -> itemController.deleteItem(listItems.getSelectedValue())).start());
 		GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
 		gbc_btnDeleteSelected.insets = new Insets(0, 0, 5, 5);
 		gbc_btnDeleteSelected.gridx = 2;
@@ -238,11 +230,10 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnUpdateSelected = new JButton("Update Selected");
 		btnUpdateSelected.setName("btnUpdateSelected");
 		btnUpdateSelected.setEnabled(false);
-		btnUpdateSelected.addActionListener(e -> {
+		btnUpdateSelected.addActionListener(e -> new Thread(() -> {
 
-			boolean isItemSelected = listItems.getSelectedIndex() != -1;
-
-			if (isItemSelected) {
+			int selectedIndex = listItems.getSelectedIndex();
+			if (selectedIndex != -1) {
 				// Fetch and parse the input values
 				String id = txtID.getText();
 				String name = txtName.getText();
@@ -254,7 +245,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 				itemController.updateItem(updatedItem);
 			}
-		});
+		}).start());
 		GridBagConstraints gbc_btnUpdateSelected;
 		gbc_btnUpdateSelected = new GridBagConstraints();
 		gbc_btnUpdateSelected.insets = new Insets(0, 0, 5, 5);
@@ -298,34 +289,43 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	@Override
 	public void addItem(Item item) {
 		// TODO Auto-generated method stub
-		listItemModel.addElement(item);
-		resetErrorLabel();
+		SwingUtilities.invokeLater(() -> {
+			listItemModel.addElement(item);
+			resetErrorLabel();
+
+		});
 	}
 
 	@Override
 	public void deleteItem(Item item) {
 		// TODO Auto-generated method stub
-		listItemModel.removeElement(item);
-		resetErrorLabel();
+		SwingUtilities.invokeLater(() -> {
+			listItemModel.removeElement(item);
+			resetErrorLabel();
+		});
 	}
 
 	@Override
 	public void updateItem(Item item) {
 		// TODO Auto-generated method stub
-		for (int i = 0; i < listItemModel.size(); i++) {
-			if (listItemModel.get(i).getId().equals(item.getId())) {
-				listItemModel.set(i, item);
-				break;
+		SwingUtilities.invokeLater(() -> {
+			for (int i = 0; i < listItemModel.size(); i++) {
+				if (listItemModel.get(i).getId().equals(item.getId())) {
+					listItemModel.set(i, item);
+					break;
+				}
 			}
-		}
-		resetErrorLabel();
+			resetErrorLabel();
+		});
 	}
 
 	@Override
 	public void showErrorMessage(String message, Item item) {
 		// TODO Auto-generated method stub
-		lblErrorMessage.setText(message + ": " + item);
+		SwingUtilities.invokeLater(() -> {
+			lblErrorMessage.setText(message + ": " + item);
 
+		});
 	}
 
 	private void resetErrorLabel() {

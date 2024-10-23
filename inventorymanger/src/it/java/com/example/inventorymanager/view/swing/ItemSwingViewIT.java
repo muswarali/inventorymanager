@@ -118,8 +118,7 @@ public class ItemSwingViewIT extends AssertJSwingJUnitTestCase{
 	@Test @GUITest
 	public void testDeleteButtonSuccess() {
 		// use the controller to populate the view's list...
-		GuiActionRunner.execute(
-			() -> itemController.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop")));
+		itemController.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
 		// ...with a item to select
 		window.list().selectItem(0);
 		window.button(JButtonMatcher.withText("Delete Selected")).click();

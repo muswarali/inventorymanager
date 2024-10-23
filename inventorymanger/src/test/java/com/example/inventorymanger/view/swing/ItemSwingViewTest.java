@@ -173,7 +173,8 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test
 	public void testDeleteButtonShouldBeEnabledOnlyWhenAItemIsSelected() {
-		GuiActionRunner.execute(() ->
+		GuiActionRunner.execute(
+				() -> 
 		inventorySwingView.getListItemModel().addElement(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop")));
 		
 		window.list("itemList").selectItem(0);
@@ -188,9 +189,9 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	public void testsDisplayItemsShouldAddItemDescriptionsToTheList() {
 		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
 		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
-		GuiActionRunner.execute(() ->
-		inventorySwingView.displayItems(Arrays.asList(item1, item2))
-				);
+		GuiActionRunner.execute(
+				() -> 		inventorySwingView.displayItems(Arrays.asList(item1, item2)));
+		
 		String[] listContents = window.list().contents();
 		assertThat(listContents).containsExactly(item1.toString(), item2.toString());
 	}
@@ -198,9 +199,8 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	@Test
 	public void testShowErrorMessageShouldShowTheMessageInTheErrorLabel() {
 		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		GuiActionRunner.execute(
-			() -> inventorySwingView.showErrorMessage("error message", item)
-		);
+		inventorySwingView.showErrorMessage("error message", item);
+	
 		window.label("errorMessageLabel")
 			.requireText("error message: " + item);
 	}
@@ -208,10 +208,7 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	@Test
 	public void testItemAddedShouldAddTheItemToTheListAndResetTheErrorLabel() {
 		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		GuiActionRunner.execute(
-				() ->
-				inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"))
-				);
+		inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
 		String[] listContents = window.list().contents();
 		assertThat(listContents).containsExactly(item.toString());
 		window.label("errorMessageLabel").requireText(" ");
@@ -221,10 +218,9 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	public void testItemUpdatedShouldUpdateTheItemInTheListAndResetTheErrorLabel() {
 	    Item updatedItem = new Item("1", "Laptop", 15, 899.99, "Updated laptop");
 	    
-	    GuiActionRunner.execute(() -> inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop")));
+	    inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
 	    
-	
-	    GuiActionRunner.execute(() -> inventorySwingView.updateItem(updatedItem));
+	    inventorySwingView.updateItem(updatedItem);
 	    
 	    String[] listContents = window.list().contents();
 	    assertThat(listContents).containsExactly(updatedItem.toString());
