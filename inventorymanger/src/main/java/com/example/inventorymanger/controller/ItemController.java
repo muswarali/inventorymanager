@@ -14,7 +14,7 @@ public class ItemController {
         this.inventoryView = inventoryView;
     }
 	
-	public void addItem(Item item) {
+	public synchronized void addItem(Item item) {
 	     Item existingitem = itemRepository.findById(item.getId());
 	     if (existingitem != null) {
 	    	 inventoryView.showErrorMessage("Already existing item with id "+ item.getId(), existingitem);
@@ -33,7 +33,7 @@ public class ItemController {
 //         itemRepository.findById(id);
 //    }
 
-    public void updateItem(Item item) {
+    public synchronized void updateItem(Item item) {
 	     Item existingitem = itemRepository.findById(item.getId());
 	     if (existingitem == null) {
 	    	 inventoryView.showErrorMessage("No existing item with id "+ item.getId(), existingitem);
@@ -45,7 +45,7 @@ public class ItemController {
 	
     }
 
-    public void deleteItem(Item item) {
+    public synchronized void deleteItem(Item item) {
  	     if (itemRepository.findById(item.getId()) == null) {
  	    	 inventoryView.showErrorMessage("No existing item with id "+ item.getId(), item);
  	    	 return;
