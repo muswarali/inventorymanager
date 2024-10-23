@@ -4,6 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import org.assertj.swing.annotation.GUITest;
@@ -14,6 +15,8 @@ import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.awaitility.Awaitility;
+
 import com.example.inventorymanager.view.swing.InventorySwingView;
 import com.example.inventorymanger.controller.ItemController;
 import com.example.inventorymanger.model.Item;
@@ -173,110 +176,121 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test
 	public void testDeleteButtonShouldBeEnabledOnlyWhenAItemIsSelected() {
-		GuiActionRunner.execute(
-				() -> 
-		inventorySwingView.getListItemModel().addElement(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop")));
-		
-		window.list("itemList").selectItem(0);
-		JButtonFixture deleteButton =
-		window.button(JButtonMatcher.withText("Delete Selected"));
-		deleteButton.requireEnabled();
-		window.list("itemList").clearSelection();
-		deleteButton.requireDisabled();
+	    GuiActionRunner.execute(
+	        () -> 
+	        inventorySwingView.getListItemModel().addElement(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"))
+	    );
+	    
+	    window.list("itemList").selectItem(0);
+	    JButtonFixture deleteButton = window.button(JButtonMatcher.withText("Delete Selected"));
+	    deleteButton.requireEnabled();
+	    window.list("itemList").clearSelection();
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(deleteButton::requireDisabled);
 	}
-	
+
 	@Test
 	public void testsDisplayItemsShouldAddItemDescriptionsToTheList() {
-		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
-		GuiActionRunner.execute(
-				() -> 		inventorySwingView.displayItems(Arrays.asList(item1, item2)));
-		
-		String[] listContents = window.list().contents();
-		assertThat(listContents).containsExactly(item1.toString(), item2.toString());
+	    Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
+	    GuiActionRunner.execute(
+	        () -> inventorySwingView.displayItems(Arrays.asList(item1, item2))
+	    );
+	    
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        String[] listContents = window.list().contents();
+	        assertThat(listContents).containsExactly(item1.toString(), item2.toString());
+	    });
 	}
 
 	@Test
 	public void testShowErrorMessageShouldShowTheMessageInTheErrorLabel() {
-		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		inventorySwingView.showErrorMessage("error message", item);
-	
-		window.label("errorMessageLabel")
-			.requireText("error message: " + item);
+	    Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    inventorySwingView.showErrorMessage("error message", item);
+
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        window.label("errorMessageLabel")
+	            .requireText("error message: " + item);
+	    });
 	}
-	
+
 	@Test
 	public void testItemAddedShouldAddTheItemToTheListAndResetTheErrorLabel() {
-		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
-		String[] listContents = window.list().contents();
-		assertThat(listContents).containsExactly(item.toString());
-		window.label("errorMessageLabel").requireText(" ");
+	    Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        String[] listContents = window.list().contents();
+	        assertThat(listContents).containsExactly(item.toString());
+	        window.label("errorMessageLabel").requireText(" ");
+	    });
 	}
-	
+
 	@Test
 	public void testItemUpdatedShouldUpdateTheItemInTheListAndResetTheErrorLabel() {
 	    Item updatedItem = new Item("1", "Laptop", 15, 899.99, "Updated laptop");
-	    
-	    inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
-	    
-	    inventorySwingView.updateItem(updatedItem);
-	    
-	    String[] listContents = window.list().contents();
-	    assertThat(listContents).containsExactly(updatedItem.toString());
-	    
-	    window.label("errorMessageLabel").requireText(" ");
-	}
 
+	    inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
+
+	    inventorySwingView.updateItem(updatedItem);
+
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        String[] listContents = window.list().contents();
+	        assertThat(listContents).containsExactly(updatedItem.toString());
+	        window.label("errorMessageLabel").requireText(" ");
+	    });
+	}
 
 	@Test
 	public void testItemRemovedShouldRemoveTheItemFromTheListAndResetTheErrorLabel() {
-		// setup
-		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
-		GuiActionRunner.execute(
-			() -> {
-				DefaultListModel<Item> listItemModel = inventorySwingView.getListItemModel();
-				listItemModel.addElement(item1);
-				listItemModel.addElement(item2);
-			}
-		);
-		// execute
-		GuiActionRunner.execute(
-			() ->
-			inventorySwingView.deleteItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"))
-		);
-		// verify
-		String[] listContents = window.list().contents();
-		assertThat(listContents).containsExactly(item2.toString());
-		window.label("errorMessageLabel").requireText(" ");
+	    Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
+	    GuiActionRunner.execute(
+	        () -> {
+	            DefaultListModel<Item> listItemModel = inventorySwingView.getListItemModel();
+	            listItemModel.addElement(item1);
+	            listItemModel.addElement(item2);
+	        }
+	    );
+	    
+	    GuiActionRunner.execute(
+	        () -> inventorySwingView.deleteItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"))
+	    );
+	    
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        String[] listContents = window.list().contents();
+	        assertThat(listContents).containsExactly(item2.toString());
+	        window.label("errorMessageLabel").requireText(" ");
+	    });
 	}
-	
+
 	@Test
 	public void testAddButtonShouldDelegateToItemControllerNewItem() {
-		window.textBox("idTextBox").enterText("1");
-		window.textBox("nameTextBox").enterText("Laptop");
-		window.textBox("quantityTextBox").enterText("10");
-		window.textBox("priceTextBox").enterText("999.99");
-		window.textBox("descriptionTextBox").enterText("Gaming Laptop");
-		window.button(JButtonMatcher.withText("Add Item")).click();
-		verify(itemController).addItem(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
+	    window.textBox("idTextBox").enterText("1");
+	    window.textBox("nameTextBox").enterText("Laptop");
+	    window.textBox("quantityTextBox").enterText("10");
+	    window.textBox("priceTextBox").enterText("999.99");
+	    window.textBox("descriptionTextBox").enterText("Gaming Laptop");
+	    window.button(JButtonMatcher.withText("Add Item")).click();
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        verify(itemController).addItem(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
+	    });
 	}
 
 	@Test
 	public void testDeleteButtonShouldDelegateToItemControllerDeleteItem() {
-		Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
-		GuiActionRunner.execute(
-			() -> {
-				DefaultListModel<Item> listStudentsModel = inventorySwingView.getListItemModel();
-				listStudentsModel.addElement(item1);
-				listStudentsModel.addElement(item2);
-			}
-		);
-		window.list("itemList").selectItem(1);
-		window.button(JButtonMatcher.withText("Delete Selected")).click();
-		verify(itemController).deleteItem(item2);
+	    Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
+	    GuiActionRunner.execute(
+	        () -> {
+	            DefaultListModel<Item> listStudentsModel = inventorySwingView.getListItemModel();
+	            listStudentsModel.addElement(item1);
+	            listStudentsModel.addElement(item2);
+	        }
+	    );
+	    window.list("itemList").selectItem(1);
+	    window.button(JButtonMatcher.withText("Delete Selected")).click();
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        verify(itemController).deleteItem(item2);
+	    });
 	}
 
 	@Test
@@ -290,20 +304,23 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	        listItemModel.addElement(originalItem2);
 	    });
 
-	    window.list("itemList").selectItem(1); 
-	    
+	    window.list("itemList").selectItem(1);
+
 	    window.textBox("idTextBox").requireText("2");
-	    window.textBox("idTextBox").requireDisabled(); 
-	        
+	    window.textBox("idTextBox").requireDisabled();
+
 	    window.textBox("nameTextBox").setText("Updated Laptop");
-	    window.textBox("quantityTextBox").setText("15");  
-	    window.textBox("priceTextBox").setText("699.99"); 
-	    window.textBox("descriptionTextBox").setText("Updated gaming laptop");  
-	    
-	    window.button(JButtonMatcher.withText("Update Selected")).click();  
+	    window.textBox("quantityTextBox").setText("15");
+	    window.textBox("priceTextBox").setText("699.99");
+	    window.textBox("descriptionTextBox").setText("Updated gaming laptop");
+
+	    window.button(JButtonMatcher.withText("Update Selected")).click();
 
 	    Item updatedItem = new Item("2", "Updated Laptop", 15, 699.99, "Updated gaming laptop");
-	    verify(itemController).updateItem(updatedItem);
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        verify(itemController).updateItem(updatedItem);
+	    });
 	}
+
 	
 }

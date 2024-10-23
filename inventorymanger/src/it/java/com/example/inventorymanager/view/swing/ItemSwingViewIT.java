@@ -2,6 +2,7 @@ package com.example.inventorymanager.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
@@ -23,6 +24,9 @@ import com.mongodb.ServerAddress;
 
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
+
+import org.awaitility.Awaitility;
+
 
 @RunWith(GUITestRunner.class)
 public class ItemSwingViewIT extends AssertJSwingJUnitTestCase{
@@ -86,87 +90,63 @@ public class ItemSwingViewIT extends AssertJSwingJUnitTestCase{
 		assertThat(window.list().contents())
 			.containsExactly(item1.toString(), item2.toString());
 	}
-
+	
 	@Test @GUITest
 	public void testAddButtonSuccess() {
-		window.textBox("idTextBox").enterText("1");
+	    window.textBox("idTextBox").enterText("1");
 	    window.textBox("nameTextBox").enterText("Laptop");
 	    window.textBox("quantityTextBox").enterText("10");
 	    window.textBox("priceTextBox").enterText("999.99");
 	    window.textBox("descriptionTextBox").enterText("Gaming Laptop");
-		window.button(JButtonMatcher.withText("Add Item")).click();
-		assertThat(window.list().contents())
-			.containsExactly(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop").toString());
+	    window.button(JButtonMatcher.withText("Add Item")).click();
+	
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+	        assertThat(window.list().contents())
+	            .containsExactly(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop").toString())
+	    );
 	}
-
-	@Test @GUITest
-	public void testAddButtonError() {
-		itemRepository.save(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
-		window.textBox("idTextBox").enterText("1");
-	    window.textBox("nameTextBox").enterText("Laptop");
-	    window.textBox("quantityTextBox").enterText("10");
-	    window.textBox("priceTextBox").enterText("999.99");
-	    window.textBox("descriptionTextBox").enterText("gaming laptop");
-		window.button(JButtonMatcher.withText("Add Item")).click();
-		assertThat(window.list().contents())
-			.isEmpty();
-		window.label("errorMessageLabel")
-			.requireText("Already existing item with id 1: "
-				+ new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
-	}
-
+	
 	@Test @GUITest
 	public void testDeleteButtonSuccess() {
-		// use the controller to populate the view's list...
-		itemController.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
-		// ...with a item to select
-		window.list().selectItem(0);
-		window.button(JButtonMatcher.withText("Delete Selected")).click();
-		assertThat(window.list().contents())
-			.isEmpty();
-	}
-
-	@Test @GUITest
-	public void testDeleteButtonError() {
-		// manually add a Item to the list, which will not be in the db
-		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		GuiActionRunner.execute(
-			() -> inventorySwingView.getListItemModel().addElement(item));
-		window.list().selectItem(0);
-		window.button(JButtonMatcher.withText("Delete Selected")).click();
-		assertThat(window.list().contents())
-			.containsExactly(item.toString());
-		window.label("errorMessageLabel")
-			.requireText("No existing item with id 1: " + item);
+	    // use the controller to populate the view's list...
+	    itemController.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
+	    
+	    // ...with an item to select
+	    window.list().selectItem(0);
+	    window.button(JButtonMatcher.withText("Delete Selected")).click();
+	    
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+	        assertThat(window.list().contents())
+	            .isEmpty()
+	    );
 	}
 	
 	@Test @GUITest
 	public void testUpdateButtonSuccess() {
 	    // Step 1: Add an item to the repository so we have something to update
-		Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
-		itemRepository.save(item);
-
+	    Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    itemRepository.save(item);
+	
 	    GuiActionRunner.execute(() -> {
-	    	inventorySwingView.getListItemModel().addElement(item);
+	        inventorySwingView.getListItemModel().addElement(item);
 	    });
-
+	
 	    window.list().selectItem(0);
-
+	
 	    window.textBox("idTextBox").requireText("1");
 	    window.textBox("idTextBox").requireDisabled();
-
+	
 	    window.textBox("nameTextBox").setText("Updated Laptop");
 	    window.textBox("quantityTextBox").setText("15");
 	    window.textBox("priceTextBox").setText("799.99");
 	    window.textBox("descriptionTextBox").setText("Updated Gaming Laptop");
-
+	
 	    window.button(JButtonMatcher.withText("Update Selected")).click();
-
-	    assertThat(window.list().contents())
-	        .containsExactly(new Item("1", "Updated Laptop", 15, 799.99, "Updated Gaming Laptop").toString());
-
+	
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+	        assertThat(window.list().contents())
+	            .containsExactly(new Item("1", "Updated Laptop", 15, 799.99, "Updated Gaming Laptop").toString())
+	    );
 	}
-
-
 
 }

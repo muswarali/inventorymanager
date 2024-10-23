@@ -1,11 +1,15 @@
 package com.example.inventorymanager.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.concurrent.TimeUnit;
+
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.awaitility.Awaitility;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,35 +64,38 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase{
 
 	@Test
 	public void testAddItem() {
-		// use the UI to add a item...
-		window.textBox("idTextBox").enterText("1");
+	    // use the UI to add a item...
+	    window.textBox("idTextBox").enterText("1");
 	    window.textBox("nameTextBox").enterText("Laptop");
 	    window.textBox("quantityTextBox").enterText("10");
 	    window.textBox("priceTextBox").enterText("999.99");
 	    window.textBox("descriptionTextBox").enterText("Gaming Laptop");
-		window.button(JButtonMatcher.withText("Add Item")).click();
-		// ...verify that it has been added to the database
-		assertThat(itemRepository.findById("1"))
-			.isEqualTo(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
+	    window.button(JButtonMatcher.withText("Add Item")).click();
+	    // ...verify that it has been added to the database
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> 
+	        assertThat(itemRepository.findById("1"))
+	            .isEqualTo(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"))
+	    );
 	}
-	
+
 	@Test
 	public void testDeleteItem() {
-		// add a item needed for tests
-		itemRepository.save(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
-		// use the controller's allItems to make the Item
-		// appear in the GUI list
-		GuiActionRunner.execute(
-			() -> itemController.getAllItems());
-		// ...select the existing Item
-		window.list().selectItem(0);
-		window.button(JButtonMatcher.withText("Delete Selected")).click();
-		// verify that the Item has been deleted from the db
-		assertThat(itemRepository.findById("1"))
-			.isNull();
+	    // add a item needed for tests
+	    itemRepository.save(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
+	    // use the controller's allItems to make the Item
+	    // appear in the GUI list
+	    GuiActionRunner.execute(
+	        () -> itemController.getAllItems());
+	    // ...select the existing Item
+	    window.list().selectItem(0);
+	    window.button(JButtonMatcher.withText("Delete Selected")).click();
+	    // verify that the Item has been deleted from the db
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> 
+	        assertThat(itemRepository.findById("1"))
+	            .isNull()
+	    );
 	}
-	
-	
+
 	@Test
 	public void testUpdateItem() {
 	    itemRepository.save(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop"));
@@ -107,13 +114,16 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase{
 
 	    window.button(JButtonMatcher.withText("Update Selected")).click();
 
-	    assertThat(itemRepository.findById("1"))
-	        .isEqualTo(new Item("1", "Updated Laptop", 15, 899.99, "Updated Gaming Laptop"));
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> 
+	        assertThat(itemRepository.findById("1"))
+	            .isEqualTo(new Item("1", "Updated Laptop", 15, 899.99, "Updated Gaming Laptop"))
+	    );
 
-	    assertThat(window.list().contents())
-	        .containsExactly(new Item("1", "Updated Laptop", 15, 899.99, "Updated Gaming Laptop").toString());
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> 
+	        assertThat(window.list().contents())
+	            .containsExactly(new Item("1", "Updated Laptop", 15, 899.99, "Updated Gaming Laptop").toString())
+	    );
 	}
-	
 
 	
 
