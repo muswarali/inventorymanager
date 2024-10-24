@@ -1,6 +1,7 @@
 package com.example.inventorymanager.app.swing;
 
 import java.awt.EventQueue;
+import java.util.concurrent.Callable;
 
 import com.example.inventorymanager.repository.mongo.ItemMongoRepository;
 import com.example.inventorymanager.view.swing.InventorySwingView;
@@ -8,20 +9,41 @@ import com.example.inventorymanger.controller.ItemController;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
-public class InventorySwingApp {
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+
+@Command(mixinStandardHelpOptions = true)
+public class InventorySwingApp implements Callable<Void>{
+	
+	@Option(names = { "--mongo-host" }, description = "MongoDB host address")
+	private String mongoHost = "localhost";
+
+	@Option(names = { "--mongo-port" }, description = "MongoDB host port")
+	private int mongoPort = 27017;
+
+	@Option(names = { "--db-name" }, description = "Database name")
+	private String databaseName = "inventory";
+
+	@Option(names = { "--db-collection" }, description = "Collection name")
+	private String collectionName = "item";
+	
 	
 	public static void main(String[] args) {
+		new CommandLine(new InventorySwingApp()).execute(args);
+	}
+
+	
+	@Override
+	public Void call() throws Exception  {
+		
 		EventQueue.invokeLater(() -> {
 
 			try {
-				String mongoHost = "localhost";
-				int mongoPort = 27017;
-				if (args.length > 0)
-					mongoHost = args[0];
-				if (args.length > 1)
-					mongoPort = Integer.parseInt(args[1]);
+			
 				ItemMongoRepository itemRepository = new ItemMongoRepository(
-						new MongoClient(new ServerAddress(mongoHost, mongoPort)), "inventory", "student");
+						new MongoClient(new ServerAddress(mongoHost, mongoPort)), databaseName, collectionName);
 				InventorySwingView itemView = new InventorySwingView();
 				ItemController itemController = new ItemController(itemRepository, itemView);
 				itemView.setItemController(itemController);
@@ -31,6 +53,7 @@ public class InventorySwingApp {
 				e.printStackTrace();
 			}
 		});
+		return null;
 	}
 
 }
