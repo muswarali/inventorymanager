@@ -25,8 +25,7 @@ import org.junit.Test;
 import com.example.inventorymanager.repository.mongo.ItemMongoRepository;
 import com.example.inventorymanger.model.Item;
 
-import static com.example.inventorymanager.repository.mongo.ItemMongoRepository.INVENTORY_DB_NAME;
-import static com.example.inventorymanager.repository.mongo.ItemMongoRepository.ITEM_COLLECTION_NAME;
+
 
 
 public class ItemMongoRepositoryTest {
@@ -38,6 +37,9 @@ public class ItemMongoRepositoryTest {
 	private MongoClient client;
 	private ItemMongoRepository itemMongoRepository;
 	private MongoCollection<Document> itemCollection;
+	
+	public static final String ITEM_COLLECTION_NAME = "item";
+	public static final String INVENTORY_DB_NAME = "inventory";
 	
 	@BeforeClass
 	public static void setupServer() {
@@ -54,7 +56,7 @@ public class ItemMongoRepositoryTest {
 	@Before
 	public void setup() {
 		client = new MongoClient(new ServerAddress(serverAddress));
-		itemMongoRepository = new ItemMongoRepository(client);
+		itemMongoRepository = new ItemMongoRepository(client,INVENTORY_DB_NAME,ITEM_COLLECTION_NAME);
 		MongoDatabase database = client.getDatabase(INVENTORY_DB_NAME);
 		// make sure we always start with a clean database
 		database.drop();

@@ -34,6 +34,8 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase{
 	private ItemMongoRepository itemRepository;
 	private ItemController itemController;
 	
+	public static final String ITEM_COLLECTION_NAME = "item";
+	public static final String INVENTORY_DB_NAME = "inventory";
 	
 
 	@Override
@@ -43,7 +45,7 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase{
 				new ServerAddress(
 					mongo.getHost(),
 					mongo.getFirstMappedPort()));
-			itemRepository = new ItemMongoRepository(mongoClient);
+			itemRepository = new ItemMongoRepository(mongoClient,INVENTORY_DB_NAME,ITEM_COLLECTION_NAME);
 			// explicit empty the database through the repository
 			for (Item item : itemRepository.findAll()) {
 				itemRepository.delete(item.getId());

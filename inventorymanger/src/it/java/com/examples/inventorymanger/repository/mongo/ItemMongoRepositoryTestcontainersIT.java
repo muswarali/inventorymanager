@@ -16,9 +16,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import com.example.inventorymanager.repository.mongo.ItemMongoRepository;
 import com.example.inventorymanger.model.Item;
 
-import static com.example.inventorymanager.repository.mongo.ItemMongoRepository.ITEM_COLLECTION_NAME;
-import static com.example.inventorymanager.repository.mongo.ItemMongoRepository.INVENTORY_DB_NAME;
-
 
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
@@ -38,13 +35,16 @@ public class ItemMongoRepositoryTestcontainersIT {
 	private ItemMongoRepository itemRepository;
 	private MongoCollection<Document> itemCollection;
 	
+	public static final String ITEM_COLLECTION_NAME = "item";
+	public static final String INVENTORY_DB_NAME = "inventory";
+	
 	@Before
 	public void setup() {
 		client = new MongoClient(
 				new ServerAddress(
 					mongo.getHost(),
 					mongo.getFirstMappedPort()));
-			itemRepository = new ItemMongoRepository(client);
+			itemRepository = new ItemMongoRepository(client,INVENTORY_DB_NAME,ITEM_COLLECTION_NAME);
 			MongoDatabase database = client.getDatabase(INVENTORY_DB_NAME);
 			// make sure we always start with a clean database
 			database.drop();

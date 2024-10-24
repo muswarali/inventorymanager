@@ -1,7 +1,6 @@
 package com.example.inventorymanager.controller;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 import org.junit.After;
@@ -16,7 +15,8 @@ import com.example.inventorymanger.model.Item;
 import com.example.inventorymanger.repository.ItemRepository;
 import com.example.inventorymanger.view.InventoryView;
 import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
+
+//docker run -p 27017:27017 --rm mongo:4.4.3
 
 public class ItemControllerIT {
 
@@ -28,16 +28,19 @@ public class ItemControllerIT {
 	private ItemController itemController;
 
 	private AutoCloseable closeable;
+	
+	public static final String ITEM_COLLECTION_NAME = "item";
+	public static final String INVENTORY_DB_NAME = "inventory";
+	
 
 	private static int mongoPort =
-		Integer.parseInt(System.getProperty("mongo.port", "27017"));
+			Integer.parseInt(System.getProperty("mongo.port", "27017"));
 
 	@Before
 	public void setUp() {
 		closeable = MockitoAnnotations.openMocks(this);
-		itemRepository = new ItemMongoRepository(
-			new MongoClient(
-				new ServerAddress("localhost", mongoPort)));
+		
+		itemRepository = new ItemMongoRepository(new MongoClient("localhost", mongoPort),INVENTORY_DB_NAME,ITEM_COLLECTION_NAME);
 		// explicit empty the database through the repository
 		for (Item item : itemRepository.findAll()) {
 			itemRepository.delete(item.getId());

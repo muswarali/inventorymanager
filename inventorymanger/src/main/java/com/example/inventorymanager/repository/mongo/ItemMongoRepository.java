@@ -14,14 +14,13 @@ import com.mongodb.client.model.Filters;
 
 public class ItemMongoRepository implements ItemRepository {
 
-	public static final String ITEM_COLLECTION_NAME = "item";
-	public static final String INVENTORY_DB_NAME = "inventory";
+
 	private MongoCollection<Document> itemCollection;
 
-	public ItemMongoRepository(MongoClient client) {
+	public ItemMongoRepository(MongoClient client , String databaseName , String collectionName) {
 		itemCollection = client
-			.getDatabase(INVENTORY_DB_NAME)
-			.getCollection(ITEM_COLLECTION_NAME);
+			.getDatabase(databaseName)
+			.getCollection(collectionName);
 	}
 
 	@Override

@@ -40,6 +40,9 @@ public class ItemSwingViewIT extends AssertJSwingJUnitTestCase{
 	private InventorySwingView inventorySwingView;
 	private ItemController itemController;
 	private ItemMongoRepository itemRepository;
+	
+	public static final String ITEM_COLLECTION_NAME = "item";
+	public static final String INVENTORY_DB_NAME = "inventory";
 
 	@BeforeClass
 	public static void setupServer() {
@@ -56,7 +59,7 @@ public class ItemSwingViewIT extends AssertJSwingJUnitTestCase{
 	@Override
 	protected void onSetUp() {
 		mongoClient = new MongoClient(new ServerAddress(serverAddress));
-		itemRepository = new ItemMongoRepository(mongoClient);
+		itemRepository = new ItemMongoRepository(mongoClient,INVENTORY_DB_NAME,ITEM_COLLECTION_NAME);
 		// explicit empty the database through the repository
 		for (Item item : itemRepository.findAll()) {
 			itemRepository.delete(item.getId());
