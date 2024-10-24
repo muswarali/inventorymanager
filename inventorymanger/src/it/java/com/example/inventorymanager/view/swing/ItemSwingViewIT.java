@@ -107,6 +107,7 @@ public class ItemSwingViewIT extends AssertJSwingJUnitTestCase{
 	        assertThat(window.list().contents())
 	            .containsExactly(new Item("1", "Laptop", 10, 999.99, "Gaming Laptop").toString())
 	    );
+	    
 	}
 	
 	@Test @GUITest

@@ -63,11 +63,18 @@ public class Item {
 	           Objects.equals(id, item.id) &&
 	           Objects.equals(name, item.name) &&
 	           Objects.equals(description, item.description);
+	    
+	    
 	}
 
 	@Override
 	public int hashCode() {
 	    return Objects.hash(id, name, quantity, price, description);
 	}
+	
+    @Override
+    public String toString() {
+        return id + " - " + name + " - " + quantity + " - " + price + " - " + description;
+    }
 
 }

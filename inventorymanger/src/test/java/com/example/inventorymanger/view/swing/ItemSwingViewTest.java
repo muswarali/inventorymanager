@@ -66,6 +66,7 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	public void testInitialState() {
 	    // Ensure buttons are initially disabled
 	    window.button("btnAdd").requireDisabled();
+	    window.button("btnCancel").requireDisabled();
 	    window.button("btnDeleteSelected").requireDisabled();
 	    window.button("btnUpdateSelected").requireDisabled();
 
@@ -320,6 +321,81 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 	        verify(itemController).updateItem(updatedItem);
 	    });
+	}
+	
+	@Test
+	public void testCancelButtonShouldClearSelectedItemAndResetFields() {
+	    // Add an item to the list and simulate selection
+	    Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    GuiActionRunner.execute(() -> inventorySwingView.getListItemModel().addElement(item));
+	    
+	    window.list("itemList").selectItem(0);
+	    
+	    window.textBox("idTextBox").requireText("1");
+	    window.textBox("nameTextBox").requireText("Laptop");
+	    window.textBox("quantityTextBox").requireText("10");
+	    window.textBox("priceTextBox").requireText("999.99");
+	    window.textBox("descriptionTextBox").requireText("High-end gaming laptop");
+	    
+	    window.button(JButtonMatcher.withText("Update Selected")).requireEnabled();
+	    window.button(JButtonMatcher.withText("Delete Selected")).requireEnabled();
+	    
+	    window.button(JButtonMatcher.withText("Cancel")).click();
+	    
+	    window.textBox("idTextBox").requireText("");
+	    window.textBox("nameTextBox").requireText("");
+	    window.textBox("quantityTextBox").requireText("");
+	    window.textBox("priceTextBox").requireText("");
+	    window.textBox("descriptionTextBox").requireText("");
+	    
+	    window.button(JButtonMatcher.withText("Update Selected")).requireDisabled();
+	    window.button(JButtonMatcher.withText("Delete Selected")).requireDisabled();
+	    window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+	    
+	    assertThat(window.list("itemList").selection()).isEmpty();
+	}
+
+	@Test
+	public void testAddButtonShouldBeDisabledWhenItemIsSelected() {
+	    Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    GuiActionRunner.execute(() -> inventorySwingView.getListItemModel().addElement(item));
+
+	    window.list("itemList").selectItem(0);
+	    
+	    window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+
+	}
+	
+	@Test
+	public void testAddButtonShouldBeEnabledWhenFieldsAreFilledAndNoItemIsSelected() {
+	    // Ensure no item is selected
+	    window.list("itemList").clearSelection();
+	    
+	    // Simulate key release event to populate all the fields
+	    window.textBox("idTextBox").enterText("1");
+	    window.textBox("nameTextBox").enterText("Laptop");
+	    window.textBox("quantityTextBox").enterText("10");
+	    window.textBox("priceTextBox").enterText("999.99");
+	    window.textBox("descriptionTextBox").enterText("Gaming Laptop");
+
+	    // Verify that the Add button is enabled when all fields are filled
+	    window.button(JButtonMatcher.withText("Add Item")).requireEnabled();
+	}
+	
+	@Test
+	public void testItemUpdateWhenItemNotFound() {
+	    Item nonExistentItem = new Item("2", "Tablet", 20, 299.99, "Updated tablet");
+
+	    inventorySwingView.addItem(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop"));
+
+	    inventorySwingView.updateItem(nonExistentItem);
+
+	    Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+	        String[] listContents = window.list().contents();
+	        assertThat(listContents).containsExactly(new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop").toString());
+	    });
+
+	    window.label("errorMessageLabel").requireText(" ");
 	}
 
 	

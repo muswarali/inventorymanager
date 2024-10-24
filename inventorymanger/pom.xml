@@ -109,23 +109,40 @@
 
 		 <plugins>
 	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-failsafe-plugin</artifactId>
-	        <version>2.22.1</version>
-	        <configuration>
-	          <systemPropertyVariables>
-	            <mongo.port>${mongo.mapped.port}</mongo.port>
-	          </systemPropertyVariables>
-	        </configuration>
-	        <executions>
-	          <execution>
-	            <goals>
-	              <goal>integration-test</goal>
-	              <goal>verify</goal>
-	            </goals>
-	          </execution>
-	        </executions>
-	      </plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.22.1</version>
+        <configuration>
+          <systemPropertyVariables>
+            <mongo.port>${mongo.mapped.port}</mongo.port>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-it</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>e2e-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/*IT.java</exclude>
+              </excludes>
+              <includes>
+                <include>**/*E2E.java</include>
+              </includes>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
 		  
 		  <!-- Adding source folder for Intergration Testing -->
 		   <plugin>
@@ -142,6 +159,7 @@
             	<configuration>
               		<sources>
                 		<source>src/it/java</source>
+                		<source>src/e2e/java</source>
               		</sources>
             	</configuration>
           		</execution>
@@ -221,7 +239,7 @@
 	            <configuration>
 					<excludes>
 						<exclude>**/Main.*</exclude>
-						<exclude>**/app/*.*</exclude>
+						<exclude>**/com/example/inventorymanager/app/**</exclude>
 						<exclude>**/model/*.*</exclude>
 					</excludes>
 				</configuration>

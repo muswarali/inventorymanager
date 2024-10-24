@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,9 +19,9 @@ import javax.swing.SwingUtilities;
 
 import com.example.inventorymanger.model.Item;
 import com.example.inventorymanger.view.InventoryView;
-
 import com.example.inventorymanger.controller.ItemController;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -36,6 +37,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	private JButton btnDeleteSelected;
 	private JButton btnUpdateSelected;
 	private JButton btnAdd;
+	private JButton btnCancel;
 
 	private JLabel lblErrorMessage;
 
@@ -168,12 +170,35 @@ public class InventorySwingView extends JFrame implements InventoryView {
 				.addItem(new Item(txtID.getText(), txtName.getText(), Integer.parseInt(txtQauntity.getText()),
 						Double.parseDouble(txtPrice.getText()), txtDescription.getText())))
 				.start());
+
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_2.gridwidth = 3;
-		gbc_btnNewButton_2.gridx = 0;
+		gbc_btnNewButton_2.gridx = 2;
 		gbc_btnNewButton_2.gridy = 5;
 		getContentPane().add(btnAdd, gbc_btnNewButton_2);
+
+		btnCancel = new JButton("Cancel");
+		btnCancel.setEnabled(false);
+		btnCancel.setName("btnCancel");
+		btnCancel.addActionListener(e -> {
+			txtID.setText("");
+			txtName.setText("");
+			txtQauntity.setText("");
+			txtPrice.setText("");
+			txtDescription.setText("");
+
+			btnUpdateSelected.setEnabled(false);
+			btnDeleteSelected.setEnabled(false);
+
+			listItems.clearSelection();
+
+			txtID.setEnabled(true);
+		});
+		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
+		gbc_btnCancel.insets = new Insets(0, 0, 5, 5);
+		gbc_btnCancel.gridx = 1;
+		gbc_btnCancel.gridy = 5;
+		getContentPane().add(btnCancel, gbc_btnCancel);
 
 		btnDeleteSelected = new JButton("Delete Selected");
 		btnDeleteSelected.setEnabled(false);
@@ -199,10 +224,13 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		listItems = new JList<>(listItemModel);
 		listItems.addListSelectionListener(e -> {
 			boolean isItemSelected = listItems.getSelectedIndex() != -1;
-			btnDeleteSelected.setEnabled(isItemSelected);
-			btnUpdateSelected.setEnabled(isItemSelected);
-			if (isItemSelected) {
 
+			// Enable/Disable buttons based on whether an item is selected
+			btnDeleteSelected.setEnabled(isItemSelected);
+			btnCancel.setEnabled(isItemSelected);
+			btnUpdateSelected.setEnabled(isItemSelected);
+
+			if (isItemSelected) {
 				Item selectedItem = listItems.getSelectedValue();
 
 				txtID.setText(selectedItem.getId());
@@ -212,6 +240,9 @@ public class InventorySwingView extends JFrame implements InventoryView {
 				txtDescription.setText(selectedItem.getDescription());
 
 				txtID.setEnabled(false);
+
+				btnAdd.setEnabled(false);
+
 			} else {
 				txtID.setText("");
 				txtName.setText("");
@@ -220,6 +251,18 @@ public class InventorySwingView extends JFrame implements InventoryView {
 				txtDescription.setText("");
 
 				txtID.setEnabled(true);
+
+			}
+		});
+		listItems.setCellRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				Item item = (Item) value;
+				return super.getListCellRendererComponent(list, getDisplayString(item), index, isSelected,
+						cellHasFocus);
 			}
 		});
 		scrollPane.setViewportView(listItems);
@@ -264,9 +307,12 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		KeyAdapter btnAddenabler = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				btnAdd.setEnabled(!txtID.getText().trim().isEmpty() && !txtName.getText().trim().isEmpty()
-						&& !txtDescription.getText().trim().isEmpty() && !txtPrice.getText().trim().isEmpty()
-						&& !txtQauntity.getText().trim().isEmpty());
+
+				if (listItems.getSelectedIndex() == -1) {
+					btnAdd.setEnabled(!txtID.getText().trim().isEmpty() && !txtName.getText().trim().isEmpty()
+							&& !txtDescription.getText().trim().isEmpty() && !txtPrice.getText().trim().isEmpty()
+							&& !txtQauntity.getText().trim().isEmpty());
+				}
 			}
 		};
 
@@ -275,7 +321,6 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		txtDescription.addKeyListener(btnAddenabler);
 		txtPrice.addKeyListener(btnAddenabler);
 		txtQauntity.addKeyListener(btnAddenabler);
-
 	}
 
 	@Override
@@ -322,13 +367,18 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	public void showErrorMessage(String message, Item item) {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(() -> {
-			lblErrorMessage.setText(message + ": " + item);
+			lblErrorMessage.setText(message + ": " + getDisplayString(item));
 
 		});
 	}
 
 	private void resetErrorLabel() {
 		lblErrorMessage.setText(" ");
+	}
+
+	private String getDisplayString(Item item) {
+		return item.getId() + " - " + item.getName() + " - " + item.getQuantity() + " - " + item.getPrice() + " - "
+				+ item.getDescription();
 	}
 
 }
