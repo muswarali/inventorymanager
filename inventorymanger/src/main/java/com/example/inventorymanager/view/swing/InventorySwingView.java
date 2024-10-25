@@ -308,11 +308,10 @@ public class InventorySwingView extends JFrame implements InventoryView {
 			@Override
 			public void keyReleased(KeyEvent e) {
 
-				if (listItems.getSelectedIndex() == -1) {
-					btnAdd.setEnabled(!txtID.getText().trim().isEmpty() && !txtName.getText().trim().isEmpty()
-							&& !txtDescription.getText().trim().isEmpty() && !txtPrice.getText().trim().isEmpty()
-							&& !txtQauntity.getText().trim().isEmpty());
-				}
+				btnAdd.setEnabled(listItems.getSelectedIndex() == -1 && !txtID.getText().trim().isEmpty()
+						&& !txtName.getText().trim().isEmpty() && !txtDescription.getText().trim().isEmpty()
+						&& !txtPrice.getText().trim().isEmpty() && !txtQauntity.getText().trim().isEmpty());
+
 			}
 		};
 
