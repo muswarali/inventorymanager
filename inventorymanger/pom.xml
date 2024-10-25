@@ -16,6 +16,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
 	<testcontainers.version>1.15.1</testcontainers.version>
     <junit.version>4.13.2</junit.version>
+    <cucumber.version>5.5.0</cucumber.version>
   </properties>
 
   <dependencies>
@@ -95,6 +96,19 @@
 		<scope>test</scope>
 	</dependency>
 	
+	<dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+	
   </dependencies>
   
   <build>
@@ -140,7 +154,21 @@
               </includes>
             </configuration>
           </execution>
-
+			<execution>
+            <id>bdd-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/*IT.java</exclude>
+              </excludes>
+              <includes>
+                <include>**/*BDD.java</include>
+              </includes>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 		  
@@ -160,10 +188,26 @@
               		<sources>
                 		<source>src/it/java</source>
                 		<source>src/e2e/java</source>
+                		<source>src/bdd/java</source>
               		</sources>
             	</configuration>
           		</execution>
-        	</executions>
+          		<execution>
+	            <id>add-test-resource</id>
+	            <phase>generate-test-resources</phase>
+	            <goals>
+	              <goal>add-test-resource</goal>
+	            </goals>
+	          	  <configuration>
+	           		   <resources>
+	             		   <resource>
+	             		     <directory>src/bdd/resources</directory>
+	            		    </resource>
+	           		   </resources>
+	          		  </configuration>
+	         	 </execution>
+        		</executions>
+        	
       	</plugin>
 			   <!-- Surefire Plugin for Unit Testing -->
 	        <plugin>
