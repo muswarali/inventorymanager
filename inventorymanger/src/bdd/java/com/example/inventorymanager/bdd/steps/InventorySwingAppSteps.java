@@ -1,13 +1,13 @@
 package com.example.inventorymanager.bdd.steps;
 
+import static com.example.inventorymanager.bdd.steps.DatabaseSteps.COLLECTION_NAME;
+import static com.example.inventorymanager.bdd.steps.DatabaseSteps.DB_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
 
-import static com.example.inventorymanager.bdd.steps.DatabaseSteps.COLLECTION_NAME;
-import static com.example.inventorymanager.bdd.steps.DatabaseSteps.DB_NAME;
-
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
@@ -115,6 +115,58 @@ public class InventorySwingAppSteps {
 			.contains(DatabaseSteps.ITEM_FIXTURE_1_NAME);
 	}
 	
+	@Given("The user selects an item from the list")
+	public void the_user_selects_an_item_from_the_list()  {
+		window.list("itemList")
+			.selectItem(Pattern.compile(".*" + DatabaseSteps.ITEM_FIXTURE_1_NAME + ".*"));
+	}
+
+	@Then("The item is removed from the list")
+	public void the_item_is_removed_from_the_list() {
+		assertThat(window.list().contents())
+			.noneMatch(e -> e.contains(".*" + DatabaseSteps.ITEM_FIXTURE_1_NAME + ".*"));
+	}
+
+	@Then("An error is shown containing the name of the selected item")
+	public void an_error_is_shown_containing_the_name_of_the_selected_item() {
+		assertThat(window.label("errorMessageLabel").text())
+			.contains(DatabaseSteps.ITEM_FIXTURE_1_NAME);
+	}
 	
+	
+	@Then("The list contains the new inventory item")
+	public void the_list_contains_the_new_inventory_item() {
+	    // Check that the list contains the newly added item
+	    assertThat(window.list().contents())
+	        .anySatisfy(e -> assertThat(e).contains("1", "Laptop", "10", "999.9", "Simple Laptop"));
+	}
+
+	@Given("The user selects the item with id {string} from the list")
+	public void the_user_selects_the_item_with_id_from_the_list(String itemId) {
+	    // Select the item with the specified ID from the list
+	    window.list("itemList")
+	        .selectItem(Pattern.compile(".*" + itemId + ".*"));
+	}
+
+	@When("The user updates the item details with the following values")
+	public void the_user_updates_the_item_details_with_the_following_values(List<Map<String, String>> values) {
+	    // Clear and enter new values for each text field
+	    Map<String, String> itemDetails = values.get(0);
+	
+	    window.textBox("nameTextBox").setText(itemDetails.get("name"));
+	    window.textBox("quantityTextBox").setText(itemDetails.get("quantity"));
+	    window.textBox("priceTextBox").setText(itemDetails.get("price"));
+	    window.textBox("descriptionTextBox").setText(itemDetails.get("description"));
+	    
+	    // Click the update button
+	    window.button(JButtonMatcher.withText("Update Selected")).click();
+	}
+
+	@Then("The list reflects the updated details for the item with id {string}")
+	public void the_list_reflects_the_updated_details_for_the_item_with_id(String itemId) {
+	    // Verify that the list contains the updated details for the specified item ID
+	    assertThat(window.list().contents())
+	        .anySatisfy(e -> assertThat(e).contains(itemId, "Updated Laptop", "15", "899.9", "High-performance laptop"));
+	}
 
 }

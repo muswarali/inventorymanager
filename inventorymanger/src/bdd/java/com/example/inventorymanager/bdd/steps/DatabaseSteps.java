@@ -23,10 +23,10 @@ public class DatabaseSteps {
 	static final double ITEM_FIXTURE_1_PRICE = 999.9;
 	static final String ITEM_FIXTURE_1_DESCRIPTION = "Simple Laptop";
 	static final String ITEM_FIXTURE_2_ID = "2";
-	static final String ITEM_FIXTURE_2_NAME = "Gaming Laptop";
+	static final String ITEM_FIXTURE_2_NAME = "Mobile";
 	static final int ITEM_FIXTURE_2_QUANTITY = 5;
 	static final double ITEM_FIXTURE_2_PRICE = 899.9;
-	static final String ITEM_FIXTURE_2_DESCRIPTION = "High end gaming laptop";
+	static final String ITEM_FIXTURE_2_DESCRIPTION = "Gaming Phone";
 
 	private MongoClient mongoClient;
 
@@ -44,15 +44,10 @@ public class DatabaseSteps {
 
 	@Given("The database contains the items with the following values")
 	public void the_database_contains_the_items_with_the_following_values(List<List<String>> values) {
-		values.forEach(v -> {
-			String id = v.get(0);
-			String name = v.get(1);
-			int quantity = Integer.parseInt(v.get(2)); // Parse quantity to int
-			double price = Double.parseDouble(v.get(3)); // Parse price to double
-			String description = v.get(4);
-
-			addTestItemToDatabase(id, name, quantity, price, description);
-		});
+	    // Skip the header row (assuming the first row contains headers)
+	    values.stream().skip(1).forEach(
+	        v -> addTestItemToDatabase(v.get(0), v.get(1), Integer.parseInt(v.get(2)), Double.parseDouble(v.get(3)), v.get(4))
+	    );
 	}
 
 	@Given("The database contains a few items")
