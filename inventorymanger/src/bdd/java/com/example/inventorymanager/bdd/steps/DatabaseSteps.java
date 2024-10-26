@@ -44,14 +44,12 @@ public class DatabaseSteps {
 
 	@Given("The database contains the items with the following values")
 	public void the_database_contains_the_items_with_the_following_values(List<List<String>> values) {
-	    // Skip the header row (assuming the first row contains headers)
-	    values.stream().skip(1).forEach(
-	        v -> addTestItemToDatabase(v.get(0), v.get(1), Integer.parseInt(v.get(2)), Double.parseDouble(v.get(3)), v.get(4))
-	    );
+		values.forEach(v -> addTestItemToDatabase(v.get(0), v.get(1), Integer.parseInt(v.get(2)),
+				Double.parseDouble(v.get(3)), v.get(4)));
 	}
 
 	@Given("The database contains a few items")
-	public void the_database_contains_a_few_students() {
+	public void the_database_contains_a_few_items() {
 		addTestItemToDatabase(ITEM_FIXTURE_1_ID, ITEM_FIXTURE_1_NAME, ITEM_FIXTURE_1_QUANTITY, ITEM_FIXTURE_1_PRICE,
 				ITEM_FIXTURE_1_DESCRIPTION);
 		addTestItemToDatabase(ITEM_FIXTURE_2_ID, ITEM_FIXTURE_2_NAME, ITEM_FIXTURE_2_QUANTITY, ITEM_FIXTURE_2_PRICE,

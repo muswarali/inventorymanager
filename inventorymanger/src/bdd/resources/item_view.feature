@@ -24,8 +24,8 @@ Feature: Inventory View
       | 1 | Laptop | 5 | 899.9 | Simple laptop |
     And The Inventory View is shown
     When The user enters the following values in the text fields
-      | id | name   | quantity | price | description   |
-      |  1 | Laptop |        5 | 899.9 | Simple laptop |
+      | id | name       | quantity | price | description   |
+      |  1 | New Laptop |       15 | 899.9 | Simple laptop |
     And The user clicks the "Add Item" button
     Then An error is shown containing the following values
       | 1 | Laptop | 5 | 899.9 | Simple laptop |
