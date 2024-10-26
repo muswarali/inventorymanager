@@ -3,8 +3,9 @@ Feature: Inventory View
 
   Scenario: The initial state of the view
     Given The database contains the items with the following values
-      | 1 | Laptop | 10 | 999.9 | Gaming Laptop |
-      | 2 | Mobile |  5 | 599.9 | Smart Phone   |
+      | id | name   | quantity | price | description   |
+      |  1 | Laptop |       10 | 999.9 | Gaming Laptop |
+      |  2 | Mobile |        5 | 599.9 | Smart Phone   |
     When The Inventory View is shown
     Then The list contains elements with the following values
       | 1 | Laptop | 10 | 999.9 | Gaming Laptop |
@@ -21,7 +22,8 @@ Feature: Inventory View
 
   Scenario: Add a new item with an existing id
     Given The database contains the items with the following values
-      | 1 | Laptop | 5 | 899.9 | Simple laptop |
+      | id | name   | quantity | price | description   |
+      |  1 | Laptop |        5 | 899.9 | Simple laptop |
     And The Inventory View is shown
     When The user enters the following values in the text fields
       | id | name       | quantity | price | description   |
