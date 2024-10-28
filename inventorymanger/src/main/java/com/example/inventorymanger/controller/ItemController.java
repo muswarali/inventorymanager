@@ -29,9 +29,6 @@ public class ItemController {
         inventoryView.displayItems(itemRepository.findAll());
     }
 
-//    public Item getItemById(String id) {
-//         itemRepository.findById(id);
-//    }
 
     public synchronized void updateItem(Item item) {
 	     Item existingitem = itemRepository.findById(item.getId());

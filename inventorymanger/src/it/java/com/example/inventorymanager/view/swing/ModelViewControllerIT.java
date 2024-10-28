@@ -40,7 +40,7 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase{
 
 	@Override
 	protected void onSetUp() {
-		// TODO Auto-generated method stub
+		
 		mongoClient = new MongoClient(
 				new ServerAddress(
 					mongo.getHost(),

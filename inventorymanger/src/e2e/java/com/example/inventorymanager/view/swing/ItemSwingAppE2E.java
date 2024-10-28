@@ -52,7 +52,7 @@ public class ItemSwingAppE2E extends AssertJSwingJUnitTestCase {
 
 	@Override
 	protected void onSetUp() throws Exception {
-		// TODO Auto-generated method stub
+		
 		String containerIpAddress = mongo.getContainerIpAddress();
 		Integer mappedPort = mongo.getFirstMappedPort();
 		mongoClient = new MongoClient(containerIpAddress, mappedPort);

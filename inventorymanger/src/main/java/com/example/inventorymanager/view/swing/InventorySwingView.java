@@ -44,7 +44,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 	private JList<Item> listItems;
 	private DefaultListModel<Item> listItemModel;
 
-	private ItemController itemController;
+	private transient ItemController itemController;
 
 	/**
 	 * Launch the application.
@@ -220,7 +220,7 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		gbc_scrollPane.gridy = 6;
 		getContentPane().add(scrollPane, gbc_scrollPane);
 
-		listItemModel = new DefaultListModel<Item>();
+		listItemModel = new DefaultListModel<>();
 		listItems = new JList<>(listItemModel);
 		listItems.addListSelectionListener(e -> {
 			boolean isItemSelected = listItems.getSelectedIndex() != -1;

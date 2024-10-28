@@ -16,11 +16,11 @@ public class ItemMongoRepository implements ItemRepository {
 
 
 	private MongoCollection<Document> itemCollection;
-	private static final String id = "id";
-	private static final String name = "name";
-	private static final String quantity = "quantity";
-	private static final String price = "price";
-	private static final String description = "description";
+	private static final String ID = "id";
+	private static final String NAME = "name";
+	private static final String QUANTITY = "quantity";
+	private static final String PRICE = "price";
+	private static final String DESCRIPTION = "description";
 
 	public ItemMongoRepository(MongoClient client , String databaseName , String collectionName) {
 		itemCollection = client
@@ -30,19 +30,18 @@ public class ItemMongoRepository implements ItemRepository {
 
 	@Override
 	public void save(Item item) {
-		// TODO Auto-generated method stub
+		
 		itemCollection.insertOne(
 				new Document()
-				.append(id, item.getId())
-				.append(name, item.getName())
-				.append(quantity, item.getQuantity())
-				.append(price, item.getPrice())
-				.append(description, item.getDescription()));
+				.append(ID, item.getId())
+				.append(NAME, item.getName())
+				.append(QUANTITY, item.getQuantity())
+				.append(PRICE, item.getPrice())
+				.append(DESCRIPTION, item.getDescription()));
 	}
 
 	@Override
 	public List<Item> findAll() {
-		// TODO Auto-generated method stub
 		return StreamSupport.
 				stream(itemCollection.find().spliterator(), false)
 				.map(this::fromDocumentToItem)
@@ -51,17 +50,16 @@ public class ItemMongoRepository implements ItemRepository {
 	
 	private Item fromDocumentToItem(Document d) {
 		return new Item(
-		        "" + d.get(id),
-		        "" + d.get(name),
-		        ((Number) d.get(quantity)).intValue(),   // Cast to Number and then to int
-		        ((Number) d.get(price)).doubleValue(),   // Cast to Number and then to double
-		        "" + d.get(description)
+		        "" + d.get(ID),
+		        "" + d.get(NAME),
+		        ((Number) d.get(QUANTITY)).intValue(),   // Cast to Number and then to int
+		        ((Number) d.get(PRICE)).doubleValue(),   // Cast to Number and then to double
+		        "" + d.get(DESCRIPTION)
 		    );
 	}
 
 	@Override
 	public Item findById(String id) {
-		// TODO Auto-generated method stub
 		Document d = itemCollection.find(Filters.eq("id", id)).first();
 		if (d != null)
 			return fromDocumentToItem(d);
@@ -70,12 +68,11 @@ public class ItemMongoRepository implements ItemRepository {
 
 	@Override
 	public void update(Item item) {
-		// TODO Auto-generated method stub
 		Document updatedDocument = new Document()
-                .append(name, item.getName())
-                .append(quantity, item.getQuantity())
-                .append(price, item.getPrice())
-                .append(description, item.getDescription());
+                .append(NAME, item.getName())
+                .append(QUANTITY, item.getQuantity())
+                .append(PRICE, item.getPrice())
+                .append(DESCRIPTION, item.getDescription());
 
         itemCollection.updateOne(
             Filters.eq("id", item.getId()),
@@ -85,7 +82,6 @@ public class ItemMongoRepository implements ItemRepository {
 
 	@Override
 	public void delete(String id) {
-		// TODO Auto-generated method stub
 		itemCollection.deleteOne(Filters.eq("id", id));
 	}
 }

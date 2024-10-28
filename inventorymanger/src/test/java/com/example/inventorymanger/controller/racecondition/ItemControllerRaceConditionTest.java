@@ -39,7 +39,7 @@ public class ItemControllerRaceConditionTest {
 	private AutoCloseable closeable;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp()  {
 	    closeable = MockitoAnnotations.openMocks(this);
 	}
 
