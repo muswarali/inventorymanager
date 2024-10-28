@@ -2,6 +2,8 @@ package com.example.inventorymanager.app.swing;
 
 import java.awt.EventQueue;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.example.inventorymanager.repository.mongo.ItemMongoRepository;
 import com.example.inventorymanager.view.swing.InventorySwingView;
@@ -50,7 +52,7 @@ public class InventorySwingApp implements Callable<Void>{
 				itemView.setVisible(true);
 				itemController.getAllItems();
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Exception", e);
 			}
 		});
 		return null;
