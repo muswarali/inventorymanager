@@ -32,7 +32,7 @@ jobs:
         xvfb-run mvn verify -Pjacoco sonar:sonar
         -Dsonar.organization=muswarali
         -Dsonar.host.url=https://sonarcloud.io
-        -Dsonar.projectKey=com.example:inventorymanger
+        -Dsonar.projectKey=com.example:inventorymanager
 
       working-directory: inventorymanger
       env:
