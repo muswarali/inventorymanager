@@ -322,14 +322,12 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 	@Override
 	public void displayItems(List<Item> items) {
-		// TODO Auto-generated method stub
 		items.stream().forEach(listItemModel::addElement);
 
 	}
 
 	@Override
 	public void addItem(Item item) {
-		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(() -> {
 			listItemModel.addElement(item);
 			resetErrorLabel();
@@ -339,7 +337,6 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 	@Override
 	public void deleteItem(Item item) {
-		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(() -> {
 			listItemModel.removeElement(item);
 			resetErrorLabel();
@@ -348,7 +345,6 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 	@Override
 	public void updateItem(Item item) {
-		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(() -> {
 			for (int i = 0; i < listItemModel.size(); i++) {
 				if (listItemModel.get(i).getId().equals(item.getId())) {
@@ -362,11 +358,9 @@ public class InventorySwingView extends JFrame implements InventoryView {
 
 	@Override
 	public void showErrorMessage(String message, Item item) {
-		// TODO Auto-generated method stub
-		SwingUtilities.invokeLater(() -> {
-			lblErrorMessage.setText(message + ": " + getDisplayString(item));
+		SwingUtilities.invokeLater(() -> lblErrorMessage.setText(message + ": " + getDisplayString(item))
 
-		});
+		);
 	}
 
 	private void resetErrorLabel() {

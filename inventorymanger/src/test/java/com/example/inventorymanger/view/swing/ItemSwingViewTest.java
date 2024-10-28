@@ -42,7 +42,6 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Override
 	protected void onSetUp() throws Exception {
-		// TODO Auto-generated method stub
 		closeable = MockitoAnnotations.openMocks(this);
 		GuiActionRunner.execute(()->{
 			inventorySwingView = new InventorySwingView();
