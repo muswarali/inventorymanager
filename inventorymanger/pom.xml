@@ -54,7 +54,7 @@
 			java:S3577
 		</sonar.issue.ignore.multicriteria.e14.ruleKey>
 		<sonar.issue.ignore.multicriteria.e14.resourceKey>
-			**/*SwingViewTest.java
+			**/*E2E.java
 		</sonar.issue.ignore.multicriteria.e14.resourceKey>
     
     <sonar.coverage.exclusions>
