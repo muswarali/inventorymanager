@@ -1,12 +1,13 @@
 package com.example.inventorymanger.view.swing;
 
-import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
+
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -16,16 +17,14 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.awaitility.Awaitility;
-
-import com.example.inventorymanager.view.swing.InventorySwingView;
-import com.example.inventorymanger.controller.ItemController;
-import com.example.inventorymanger.model.Item;
-
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.example.inventorymanager.view.swing.InventorySwingView;
+import com.example.inventorymanger.controller.ItemController;
+import com.example.inventorymanger.model.Item;
 
 
 @RunWith(GUITestRunner.class)
@@ -277,6 +276,23 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 	}
 
 	@Test
+	public void testAddButtonShouldBeDisabledWhenAllFieldsAreFilledButItemIsSelected() {
+	    Item item = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
+	    GuiActionRunner.execute(() -> inventorySwingView.getListItemModel().addElement(item));
+	    
+	    window.list("itemList").selectItem(0);
+
+	    window.textBox("idTextBox").requireText("1");
+	    window.textBox("nameTextBox").enterText("Laptop");
+	    window.textBox("quantityTextBox").enterText("10");
+	    window.textBox("priceTextBox").enterText("999.99");
+	    window.textBox("descriptionTextBox").enterText("Gaming Laptop");
+
+	    // Verify that the Add button is disabled due to item selection
+	    window.button(JButtonMatcher.withText("Add Item")).requireDisabled();
+	}
+	
+	@Test
 	public void testDeleteButtonShouldDelegateToItemControllerDeleteItem() {
 	    Item item1 = new Item("1", "Laptop", 10, 999.99, "High-end gaming laptop");
 	    Item item2 = new Item("2", "Laptop", 12, 599.99, "gaming laptop");
@@ -397,6 +413,8 @@ public class ItemSwingViewTest extends AssertJSwingJUnitTestCase{
 
 	    window.label("errorMessageLabel").requireText(" ");
 	}
+
+
 
 	
 }

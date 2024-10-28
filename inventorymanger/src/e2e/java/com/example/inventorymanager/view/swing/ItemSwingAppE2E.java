@@ -24,7 +24,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 
 
-//docker run -p 27017:27017 --rm mongo:4.4.3
+//1Laptop
 
 @RunWith(GUITestRunner.class)
 public class ItemSwingAppE2E extends AssertJSwingJUnitTestCase {

@@ -17,6 +17,20 @@
 	<testcontainers.version>1.15.1</testcontainers.version>
     <junit.version>4.13.2</junit.version>
     <cucumber.version>5.5.0</cucumber.version>
+    <pitest-maven-version>1.5.2</pitest-maven-version>
+    
+    
+    <sonar.coverage.exclusions>
+		**/model/*.*,
+		**/com/example/inventorymanager/app/**
+	</sonar.coverage.exclusions>
+	
+	<sonar.junit.reportPaths>
+		${project.build.directory}/surefire-reports,
+		${project.build.directory}/failsafe-reports
+	</sonar.junit.reportPaths>
+    
+    
   </properties>
 
   <dependencies>
@@ -171,6 +185,14 @@
           </execution>
         </executions>
       </plugin>
+      
+
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.8.0.2131</version>
+			</plugin>
+
 		  
 		  <!-- Adding source folder for Intergration Testing -->
 		   <plugin>
@@ -225,15 +247,53 @@
 	        <plugin>
 	            <groupId>org.pitest</groupId>
 	            <artifactId>pitest-maven</artifactId>
-	            <version>1.7.0</version>
-	            <configuration>
+	            <version>${pitest-maven-version}</version>
+	            <executions>
+							<execution>
+								<id>pitest</id>
+								<phase>test</phase>
+								<goals>
+									<goal>mutationCoverage</goal>
+								</goals>
+							</execution>
+						</executions>
+		            <configuration>
 	                <targetClasses>
-	                    <param>com.example.inventory.*.*</param>
+	                    <param>com.example.inventorymanger.*.*</param>
 	                </targetClasses>
 	                <targetTests>
-	                	<param>com.example.inventory.*.*</param>
+	                	<param>com.example.inventorymanger.*.*</param>
 	                </targetTests>
-	                <mutationThreshold>80</mutationThreshold>
+	                <excludedClasses>
+								<param>
+									com.example.inventorymanger.repository.**</param>
+								<param>
+									com.example.inventorymanger.view.swing.**</param>
+								<param>
+									com.example.inventorymanger.model.**</param>
+								<param>
+									com.example.inventorymanager.app.**</param>
+
+							</excludedClasses>
+							<excludedTestClasses>
+								<param>
+									com.example.inventorymanager.controller.**IT</param>
+								<param>
+									com.example.inventorymanager.bdd.**</param>
+
+								<param>
+									com.example.inventorymanager.**E2E</param>
+								<param>
+									com.example.inventorymanger.repository.**</param>
+								<param>
+									com.example.inventorymanger.view.swing.**</param>
+								<param>
+									com.example.inventorymanager.controller.racecondition.**</param>
+							</excludedTestClasses>
+							<mutators>
+								<mutator>DEFAULTS</mutator>
+							</mutators>
+							<mutationThreshold>80</mutationThreshold>
 	                <outputFormats>
 	                    <param>HTML</param>
 	                </outputFormats>
@@ -346,5 +406,34 @@
 		        </plugins>
 		      </build>
 		    </profile>
-		  </profiles>
+		    
+		    <profile>
+		      <id>jacoco</id>
+		      <build>
+		        <plugins>
+		          <plugin>
+		            <groupId>org.jacoco</groupId>
+		            <artifactId>jacoco-maven-plugin</artifactId>
+		            <version>0.8.5</version>
+		            <configuration>
+		              <excludes>
+		                <exclude>**/model/*.*</exclude>
+		                <exclude>**/com/example/inventorymanager/app/**</exclude>
+		              </excludes>
+		            </configuration>
+		            <executions>
+		              <execution>
+		                <goals>
+		                  <goal>prepare-agent</goal>
+		                  <goal>report</goal>
+		                </goals>
+		              </execution>
+		            </executions>
+		          </plugin>
+		        </plugins>
+		      </build>
+		    </profile>
+  
+	  </profiles>
+		  
 </project>

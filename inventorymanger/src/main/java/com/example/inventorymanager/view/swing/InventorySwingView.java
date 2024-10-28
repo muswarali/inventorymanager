@@ -274,19 +274,17 @@ public class InventorySwingView extends JFrame implements InventoryView {
 		btnUpdateSelected.setEnabled(false);
 		btnUpdateSelected.addActionListener(e -> new Thread(() -> {
 
-			int selectedIndex = listItems.getSelectedIndex();
-			if (selectedIndex != -1) {
-				// Fetch and parse the input values
-				String id = txtID.getText();
-				String name = txtName.getText();
-				int quantity = Integer.parseInt(txtQauntity.getText());
-				double price = Double.parseDouble(txtPrice.getText());
-				String description = txtDescription.getText();
+			// Fetch and parse the input values
+			String id = txtID.getText();
+			String name = txtName.getText();
+			int quantity = Integer.parseInt(txtQauntity.getText());
+			double price = Double.parseDouble(txtPrice.getText());
+			String description = txtDescription.getText();
 
-				Item updatedItem = new Item(id, name, quantity, price, description);
+			Item updatedItem = new Item(id, name, quantity, price, description);
 
-				itemController.updateItem(updatedItem);
-			}
+			itemController.updateItem(updatedItem);
+
 		}).start());
 		GridBagConstraints gbc_btnUpdateSelected;
 		gbc_btnUpdateSelected = new GridBagConstraints();
