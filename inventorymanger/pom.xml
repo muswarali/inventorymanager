@@ -470,7 +470,7 @@
 		          <plugin>
 		            <groupId>org.jacoco</groupId>
 		            <artifactId>jacoco-maven-plugin</artifactId>
-		            <version>${jacoco.verion}}</version>
+		            <version>0.8.5</version>
 		            <configuration>
 		              <excludes>
 		                <exclude>**/model/*.*</exclude>
@@ -489,7 +489,34 @@
 		        </plugins>
 		      </build>
 		    </profile>
+		     <profile>
+		      <id>coveralls</id>
+		      <build>
+		        <plugins>
+		          <plugin>
+		            <!-- JaCoCo report is required by coveralls-maven-plugin -->
+		            <groupId>org.jacoco</groupId>
+		            <artifactId>jacoco-maven-plugin</artifactId>
+		          </plugin>
+		          <plugin>
+		            <!-- configured in pluginManagement -->
+		            <groupId>org.eluder.coveralls</groupId>
+		            <artifactId>coveralls-maven-plugin</artifactId>
+		            <executions>
+		              <execution>
+		                <phase>verify</phase>
+		                <goals>
+		                  <goal>report</goal>
+		                </goals>
+		              </execution>
+		            </executions>
+		          </plugin>
+		        </plugins>
+		      </build>
+		    </profile>
   
 	  </profiles>
+	  
+	  
 		  
 </project>
