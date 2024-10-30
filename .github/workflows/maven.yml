@@ -44,7 +44,7 @@ jobs:
         
       - name: Run Coveralls Report
         run: >
-          xvfb-run mvn verify  ${{ matrix.additional-maven-args }}
+          mvn coveralls:report -Pcoveralls  ${{ matrix.additional-maven-args }}
         working-directory: ${{ env.workdir }}
         env: 
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
