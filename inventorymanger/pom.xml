@@ -18,7 +18,20 @@
     <junit.version>4.13.2</junit.version>
     <cucumber.version>5.5.0</cucumber.version>
     <pitest-maven-version>1.5.2</pitest-maven-version>
-    
+    <assertj-version>3.17.1</assertj-version>
+    <mokito.version>4.4.0</mokito.version>
+    <mongodriver.version>3.12.7</mongodriver.version>
+    <logback.version>1.2.3</logback.version>
+    <de.bwaldvogel.version>1.11.1</de.bwaldvogel.version>
+    <picocli.version>4.6.1</picocli.version>
+    <awaitility.version>4.0.2</awaitility.version>
+    <sonar.version>3.8.0.2131</sonar.version>
+    <org.codehaus.mojo.version>3.0.0</org.codehaus.mojo.version>
+    <surefire.version>3.0.0-M5</surefire.version>
+    <coveralls.version>4.3.0</coveralls.version>
+    <javax.xml.bind.version>2.3.1</javax.xml.bind.version>
+    <jacoco.verion>0.8.7</jacoco.verion>
+    <io.fabric8.version>0.40.2</io.fabric8.version>
     
     
     <!-- For each rule to be ignored, add another eXX and two corresponding
@@ -80,43 +93,34 @@
     <dependency>
 	    <groupId>org.assertj</groupId>
     	<artifactId>assertj-swing-junit</artifactId>
-    	<version>3.17.1</version>
+    	<version>${assertj-version}</version>
     	<scope>test</scope>
 	</dependency>
 
     <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>4.4.0</version>
+        <version>${mokito.version}</version>
         <scope>test</scope>
     </dependency>
-    <dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-api</artifactId>
-		<version>2.13.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.13.0</version>
-	</dependency>
+    
 	
 	<dependency>
 		<groupId>org.mongodb</groupId>
 		<artifactId>mongo-java-driver</artifactId>
-		<version>3.12.7</version>
+		<version>${mongodriver.version}</version>
 	</dependency>
 	<dependency>
 		<!-- required to see Mongo Java Driver logs -->
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-classic</artifactId>
-		<version>1.2.3</version>
+		<version>${logback.version}</version>
 	</dependency>
 	
 	<dependency>
 		<groupId>de.bwaldvogel</groupId>
 		<artifactId>mongo-java-server</artifactId>
-		<version>1.11.1</version>
+		<version>${de.bwaldvogel.version}</version>
 		<scope>test</scope>
 	</dependency>
 	
@@ -137,13 +141,13 @@
 	<dependency>
 		<groupId>info.picocli</groupId>
 		<artifactId>picocli</artifactId>
-		<version>4.6.1</version>
+		<version>${picocli.version}</version>
 	</dependency>
     
     <dependency>
 		<groupId>org.awaitility</groupId>
 		<artifactId>awaitility</artifactId>
-		<version>4.0.2</version>
+		<version>${awaitility.version}</version>
 		<scope>test</scope>
 	</dependency>
 	
@@ -227,7 +231,7 @@
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.8.0.2131</version>
+				<version>${sonar.version}</version>
 			</plugin>
 
 		  
@@ -235,7 +239,7 @@
 		   <plugin>
         		<groupId>org.codehaus.mojo</groupId>
         		<artifactId>build-helper-maven-plugin</artifactId>
-        		<version>3.0.0</version>
+        		<version>${org.codehaus.mojo.version}</version>
         	<executions>
           		<execution>
             		<id>add-test-source</id>
@@ -272,7 +276,7 @@
 	        <plugin>
 	            <groupId>org.apache.maven.plugins</groupId>
 	            <artifactId>maven-surefire-plugin</artifactId>
-	            <version>3.0.0-M5</version>
+	            <version>${surefire.version}</version>
 	            <configuration>
 	                <includes>
 	                    <include>**/*Test.java</include>
@@ -337,11 +341,26 @@
 	            </configuration>
 	        </plugin>
 	        
+	        <plugin>
+					<groupId>org.eluder.coveralls</groupId>
+					<artifactId>coveralls-maven-plugin</artifactId>
+					<version>${coveralls.version}</version>
+					<dependencies>
+						<!-- This is required when using JDK 9 or higher
+						since javax.xml.bind has been removed from the JDK -->
+						<dependency>
+							<groupId>javax.xml.bind</groupId>
+							<artifactId>jaxb-api</artifactId>
+							<version>${javax.xml.bind.version}</version>
+						</dependency>
+					</dependencies>
+			</plugin>
+	        
 	         <!-- Docker Plugin -->
 	       	<plugin>
 		        <groupId>io.fabric8</groupId>
 		        <artifactId>docker-maven-plugin</artifactId>
-		        <version>0.40.2</version>
+		        <version>${io.fabric8.version}</version>
 		        <configuration>
 		          <images>
 		            <image>
@@ -376,7 +395,7 @@
 	        <plugin>
 	            <groupId>org.jacoco</groupId>
 	            <artifactId>jacoco-maven-plugin</artifactId>
-	            <version>0.8.7</version>
+	            <version>${jacoco.verion}</version>
 	            <configuration>
 					<excludes>
 						<exclude>**/com/example/inventorymanager/app/**</exclude>
@@ -451,7 +470,7 @@
 		          <plugin>
 		            <groupId>org.jacoco</groupId>
 		            <artifactId>jacoco-maven-plugin</artifactId>
-		            <version>0.8.5</version>
+		            <version>${jacoco.verion}}</version>
 		            <configuration>
 		              <excludes>
 		                <exclude>**/model/*.*</exclude>
