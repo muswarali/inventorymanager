@@ -1,4 +1,4 @@
-name: Java CI with Maven with Windows and Mac
+name: Java CI with Maven on Windows and macOS 
 
 on:
   push:
@@ -9,25 +9,39 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # test against several OSes:
         os: [macos-latest, windows-latest]
+        java-version: [1.8, 17]
 
-
-    name: Build with Java 17 on ${{ matrix.os }}
+    name: Build with Java ${{ matrix.java-version }} on ${{ matrix.os }}
     steps:
-     - name: Cache Maven packages
-       uses: actions/cache@v3
-       with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml', '**/*.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-m2-
-     - uses: actions/checkout@v4
-     - name: Set up JDK 17
-       uses: actions/setup-java@v4
-       with:
-        java-version: 17
-        distribution: 'temurin'
-     - name: Build with Maven
-       run: mvn verify
-       working-directory: inventorymanger
+      - uses: actions/checkout@v4
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-jdk${{ matrix.java-version }}-${{ hashFiles('**/pom.xml', '**/*.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+
+      - name: Docker Setup (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: docker-practice/actions-setup-docker@master
+
+      - name: Docker Config (Windows only)
+        if: matrix.os == 'windows-latest'
+        env:
+          DOCKER_HOST: tcp://localhost:2375
+        run: |
+          sc config docker binpath="dockerd.exe --run-service -H tcp://localhost:2375"
+          restart-service *docker*
+          docker info
+
+      - name: Build with Maven
+        run: |
+          mvn verify -Pskip-testcontainers
+        working-directory: inventorymanger
