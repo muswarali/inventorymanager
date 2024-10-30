@@ -1,6 +1,7 @@
 name: Java CI with Maven with Windows and Mac
 
 on:
+  push:
   pull_request:
 
 jobs:
